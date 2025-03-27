@@ -1,28 +1,51 @@
 package core.backend;
-class Room {
-    static private int numID = 0;
-    int ID;
-    int etage;
-    String type;
-    double price;
-    String Description;
-    String linkImage;
 
-    public Room(String type, double price, String description, int etage) {
-        this.ID = numID++;
-        this.type = type;
-        this.price = price;
-        this.Description = description;
-        this.etage = etage;
+import java.util.List;
+import java.util.ArrayList;
+
+public class RoomManagemment {
+    static List<RoomType> rooms;
+
+    public RoomManagemment() {
+        rooms = new ArrayList<>();
     }
-}
 
-public class RoomManagemment extends Room {
-    static final String[] rooms = {"Simple", "Double", "Suite normale",
-                                   "Suite présidentielle"};
-    static final Double[] roomPrice = {349.99, 549.99, 849.99, 1399.99};
+    public void addRoom(RoomType room) {
+        rooms.add(room);
+    }
 
-    public RoomManagemment(int id, String description, int etage) {
-        super(rooms[id], roomPrice[id], description, etage);
+    public void removeRoom(int id) {
+        rooms.removeIf(room -> room.ID == id);
+    }
+
+    public void modifyRoom(int id, String newType, double newPrice, String newDescription, int newEtage) {
+        if (id >= 0 && id < rooms.size()) {
+            Room room = rooms.get(id);
+            room.type = newType;
+            room.price = newPrice;
+            room.description = newDescription;
+            room.etage = newEtage;
+        }
+    }
+
+    public Room getRoomByID(int id) {
+        if (id >= 0 && id < rooms.size()) {
+            return rooms.get(id);
+        }
+        return null;
+    }
+
+    public RoomType[] getRoomByTypes(String type) {
+        List<RoomType> filteredRooms = new ArrayList<>();
+        for (RoomType room : rooms) {
+            if (room.type.equals(type)) {
+                filteredRooms.add(room);
+            }
+        }
+        return filteredRooms.toArray(new RoomType[0]);
+    }
+
+    public RoomType[] getRooms() {
+        return rooms.toArray(new RoomType[0]);
     }
 }

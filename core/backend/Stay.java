@@ -1,7 +1,7 @@
 package core.backend;
+
 import java.util.ArrayList;
 import java.util.List;
-
 
 class MiniBar {
     static final String[] boissons = {"Eau", "Soda", "Jus de fruit","Thé",

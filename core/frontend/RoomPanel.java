@@ -30,7 +30,7 @@ class CardPanel extends JPanel {
         setBackground(color);
 
         if (image != null) {
-            Image scaledImage = this.image.getImage().getScaledInstance(200, 150, Image.SCALE_SMOOTH);
+            Image scaledImage = this.image.getImage().getScaledInstance(250, 200, Image.SCALE_SMOOTH);
             this.image = new ImageIcon(scaledImage);
 
             JLabel imageLabel = new JLabel(image);

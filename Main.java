@@ -23,10 +23,13 @@ public class Main extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pack();
 
-        JPanel main = new JPanel();
+        HomePanel homePanel = new HomePanel();
+        ClientPanel clientPanel = new ClientPanel(accentColor);
         RoomPanel roomPanel = new RoomPanel(accentColor);
+        
+        JPanel main = new JPanel();
         main.setLayout(new BorderLayout());
-        main.add(roomPanel);
+        main.add(homePanel);
 
         JPanel sidebar = new JPanel();
         sidebar.setLayout(new BoxLayout(sidebar, BoxLayout.Y_AXIS));
@@ -36,10 +39,13 @@ public class Main extends JFrame {
         // BUTTON ICON
         ImageIcon roomIcon = new ImageIcon("./icons/room.png");
         Image scaledRoomImage = roomIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+
+        ImageIcon clientIcon = new ImageIcon("./icons/client.png");
+        Image scaledClientImage = clientIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
         
 
         ImageIcon homeIcon = new ImageIcon("./icons/home.png");
-        Image scalehomeImage = homeIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        Image scaledHomeImage = homeIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
 
         ImageIcon reservationIcon = new ImageIcon("./icons/reservation.png");
         Image scaledReservationImage = reservationIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
@@ -48,15 +54,25 @@ public class Main extends JFrame {
         Image scaledStayImage = stayIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
 
         // SIDEBAR BUTTON
-        JButton homeButton = new JButton("accueil");
-        homeButton.setIcon(new ImageIcon(scalehomeImage));
-        // homeButton.addActionListener(_ -> {
-            //     main.removeAll();
-            //     main.add(roomPanel);
-            //     main.revalidate();
-            //     main.repaint();
-            // });
+        JButton homeButton = new JButton("Accueil");
+        homeButton.setIcon(new ImageIcon(scaledHomeImage));
+        homeButton.addActionListener(_ -> {
+                main.removeAll();
+                main.add(homePanel);
+                main.revalidate();
+                main.repaint();
+        });
         sidebar.add(homeButton);
+
+        JButton clientButton = new JButton("Client");
+        clientButton.setIcon(new ImageIcon(scaledClientImage));
+        clientButton.addActionListener(_ -> {
+                main.removeAll();
+                main.add(clientPanel);
+                main.revalidate();
+                main.repaint();
+        });
+        sidebar.add(clientButton);
 
         JButton roomButton = new JButton("Chambres");
         roomButton.setIcon(new ImageIcon(scaledRoomImage));
@@ -77,9 +93,8 @@ public class Main extends JFrame {
         // sidebar.add(stayButton);
 
         // Add buttons to an array
-        JButton[] buttons = {roomButton, homeButton, reservationButton, stayButton};
+        JButton[] buttons = {roomButton, homeButton, reservationButton, stayButton, clientButton};
         configButton(buttons);
-
 
 
         // PANEL ADD

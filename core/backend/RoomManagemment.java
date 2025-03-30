@@ -29,18 +29,14 @@ public class RoomManagemment {
     }
 
     public Room getRoomByID(int id) {
-        if (id >= 0 && id < rooms.size()) {
-            return rooms.get(id);
-        }
+        if (id >= 0 && id < rooms.size()) return rooms.get(id);
         return null;
     }
 
     public RoomType[] getRoomByTypes(String type) {
         List<RoomType> filteredRooms = new ArrayList<>();
         for (RoomType room : rooms) {
-            if (room.type.equals(type)) {
-                filteredRooms.add(room);
-            }
+            if (room.type.equals(type)) filteredRooms.add(room);
         }
         return filteredRooms.toArray(new RoomType[0]);
     }

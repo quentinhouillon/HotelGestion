@@ -11,7 +11,15 @@ public class Client {
         this.phone = phone;
     }
 
-    public String[] detail() {
-        return new String[] {lastName, name, phone};
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getPhone() {
+        return phone;
     }
 }

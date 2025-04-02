@@ -2,6 +2,7 @@ import java.awt.*;
 import javax.swing.*;
 
 import core.frontend.*;
+import core.frontend.RoomPanel;
 
 public class Main extends JFrame {
     public Main() {
@@ -18,14 +19,28 @@ public class Main extends JFrame {
         UIManager.put("Label.foreground", Color.WHITE);
 
         setTitle("Hotel Continental");
-        setPreferredSize(new Dimension(850, 725));
-        setMinimumSize(new Dimension(700, 650));
+        setPreferredSize(new Dimension(850, 750));
+        setMinimumSize(new Dimension(750, 700));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pack();
 
         HomePanel homePanel = new HomePanel();
         ClientPanel clientPanel = new ClientPanel(accentColor);
-        RoomPanel roomPanel = new RoomPanel(accentColor);
+        RoomPanel roomPanel = new RoomPanel(accentColor, primaryColor);
+
+        // Make the main panel scrollable
+        JScrollPane scrollableClientPanel = new JScrollPane(clientPanel);
+        scrollableClientPanel.setBorder(null);
+        JScrollPane scrollableRoomPanel = new JScrollPane(roomPanel);
+        scrollableRoomPanel.setBorder(null);
+
+        // Set scroll bar policies
+
+        // scrollableClientPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        // scrollableClientPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+        scrollableRoomPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollableRoomPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         
         JPanel main = new JPanel();
         main.setLayout(new BorderLayout());
@@ -68,7 +83,7 @@ public class Main extends JFrame {
         clientButton.setIcon(new ImageIcon(scaledClientImage));
         clientButton.addActionListener(_ -> {
                 main.removeAll();
-                main.add(clientPanel);
+                main.add(scrollableClientPanel);
                 main.revalidate();
                 main.repaint();
         });
@@ -78,7 +93,7 @@ public class Main extends JFrame {
         roomButton.setIcon(new ImageIcon(scaledRoomImage));
         roomButton.addActionListener(_ -> {
             main.removeAll();
-            main.add(roomPanel);
+            main.add(scrollableRoomPanel);
             main.revalidate();
             main.repaint();
         });

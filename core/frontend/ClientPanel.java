@@ -103,7 +103,7 @@ class ListPanel extends JPanel {
         });
 
         // Ajouter une action pour le bouton "Modifier" (exemple)
-        modifyButton.addActionListener(e -> {
+        modifyButton.addActionListener(_ -> {
             // Créer une fenêtre JDialog pour modifier les informations du client
             JDialog modifyDialog = new JDialog(SwingUtilities.getWindowAncestor(this), "Modifier le client", Dialog.ModalityType.APPLICATION_MODAL);
             modifyDialog.setSize(300, 200);
@@ -116,14 +116,23 @@ class ListPanel extends JPanel {
 
             formPanel.add(new JLabel("Nom :"));
             JTextField lastNameField = new JTextField(lastName);
+            lastNameField.setBackground(mainColor);
+            lastNameField.setForeground(Color.WHITE);
+            lastNameField.setBorder(null);
             formPanel.add(lastNameField);
 
             formPanel.add(new JLabel("Prénom :"));
             JTextField firstNameField = new JTextField(firstName);
+            firstNameField.setBackground(mainColor);
+            firstNameField.setForeground(Color.WHITE);
+            firstNameField.setBorder(null);
             formPanel.add(firstNameField);
 
             formPanel.add(new JLabel("Téléphone :"));
             JTextField phoneField = new JTextField(phone);
+            phoneField.setBackground(mainColor);
+            phoneField.setForeground(Color.WHITE);
+            phoneField.setBorder(null);
             formPanel.add(phoneField);
 
             modifyDialog.add(formPanel, BorderLayout.CENTER);
@@ -191,7 +200,7 @@ class ListPanel extends JPanel {
                 }
             });
 
-            saveButton.addActionListener(event -> {
+            saveButton.addActionListener(_ -> {
                 // Mettre à jour les informations du client
                 String newLastName = lastNameField.getText();
                 String newFirstName = firstNameField.getText();
@@ -204,7 +213,7 @@ class ListPanel extends JPanel {
                 modifyDialog.dispose();
             });
 
-            cancelButton.addActionListener(event -> modifyDialog.dispose());
+            cancelButton.addActionListener(_ -> modifyDialog.dispose());
 
             dialogButtonPanel.add(saveButton);
             dialogButtonPanel.add(cancelButton);
@@ -298,7 +307,7 @@ public class ClientPanel extends JPanel {
                         yesButton.setBackground(UIConstants.GREEN_HOVER_COLOR);
                     }
                 });
-                yesButton.addActionListener(event -> {
+                yesButton.addActionListener(_ -> {
                     // Supprimer le client
                     Component source = (Component) e.getSource();
                     ListPanel parentPanel = (ListPanel) SwingUtilities.getAncestorOfClass(ListPanel.class, source);
@@ -349,7 +358,7 @@ public class ClientPanel extends JPanel {
                         noButton.setBackground(UIConstants.RED_HOVER_COLOR);
                     }
                 });
-                noButton.addActionListener(event -> confirmDialog.dispose());
+                noButton.addActionListener(_ -> confirmDialog.dispose());
 
                 // Ajouter les boutons au panel
                 buttonPanel.add(yesButton);
@@ -372,5 +381,132 @@ public class ClientPanel extends JPanel {
 
         // Ajouter le conteneur directement au panneau principal
         add(listContainer, BorderLayout.CENTER);
+
+        // Ajouter un footer panel avec un bouton "Ajouter"
+        JPanel footerPanel = new JPanel(new BorderLayout());
+        footerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Marges internes
+        footerPanel.setBackground(null);
+        
+
+        // Bouton "Ajouter"
+        JButton addButton = new JButton("Ajouter");
+        addButton.setForeground(Color.WHITE);
+        addButton.setBackground(UIConstants.PURPLE_BUTTON_COLOR);
+        addButton.setFocusPainted(false);
+        addButton.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20)); // Marges internes
+
+        // Effets visuels pour le bouton "Ajouter"
+        addButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                addButton.setBackground(UIConstants.PURPLE_HOVER_COLOR);
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                addButton.setBackground(UIConstants.PURPLE_BUTTON_COLOR);
+            }
+
+            @Override
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                addButton.setBackground(UIConstants.PURPLE_CLICK_COLOR);
+            }
+
+            @Override
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                addButton.setBackground(UIConstants.PURPLE_HOVER_COLOR);
+            }
+        });
+
+        // Action pour le bouton "Ajouter"
+        addButton.addActionListener(_ -> {
+            // Créer une fenêtre JDialog pour ajouter un nouveau client
+            JDialog addDialog = new JDialog(SwingUtilities.getWindowAncestor(this), "Ajouter un client", Dialog.ModalityType.APPLICATION_MODAL);
+            addDialog.setSize(300, 200);
+            addDialog.setLayout(new BorderLayout());
+            addDialog.setLocationRelativeTo(this);
+
+            // Panel pour les champs de saisie
+            JPanel formPanel = new JPanel(new GridLayout(3, 2, 10, 10));
+            formPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+            formPanel.add(new JLabel("Nom :"));
+            JTextField lastNameField = new JTextField();
+            lastNameField.setBackground(accentColor);
+            lastNameField.setForeground(Color.WHITE);
+            lastNameField.setBorder(null);
+            formPanel.add(lastNameField);
+
+            formPanel.add(new JLabel("Prénom :"));
+            JTextField firstNameField = new JTextField();
+            firstNameField.setBackground(accentColor);
+            firstNameField.setForeground(Color.WHITE);
+            firstNameField.setBorder(null);
+            formPanel.add(firstNameField);
+
+            formPanel.add(new JLabel("Téléphone :"));
+            JTextField phoneField = new JTextField();
+            phoneField.setBackground(accentColor);
+            phoneField.setForeground(Color.WHITE);
+            phoneField.setBorder(null);
+            formPanel.add(phoneField);
+
+            addDialog.add(formPanel, BorderLayout.CENTER);
+
+            // Panel pour les boutons
+            JPanel dialogButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+
+            JButton saveButton = new JButton("Enregistrer");
+            saveButton.setForeground(Color.WHITE);
+            saveButton.setBackground(UIConstants.GREEN_BUTTON_COLOR);
+            saveButton.setFocusPainted(false);
+            saveButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+
+            saveButton.addActionListener(_ -> {
+                // Ajouter le nouveau client
+                String lastName = lastNameField.getText();
+                String firstName = firstNameField.getText();
+                String phone = phoneField.getText();
+
+                if (!lastName.isEmpty() && !firstName.isEmpty() && !phone.isEmpty()) {
+                    clients.addClient(lastName, firstName, phone);
+
+                    // Ajouter un nouveau ListPanel pour le client
+                    ListPanel newClientRow = new ListPanel(lastName, firstName, phone, _ -> {
+                        // Réutiliser la logique de suppression existante
+                    }, listColor);
+
+                    newClientRow.setPreferredSize(new Dimension(newClientRow.getPreferredSize().width, 100));
+                    listContainer.add(newClientRow);
+                    listContainer.add(Box.createRigidArea(new Dimension(0, 10))); // Espacement
+
+                    listContainer.revalidate();
+                    listContainer.repaint();
+                    addDialog.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(addDialog, "Tous les champs doivent être remplis.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                }
+            });
+
+            JButton cancelButton = new JButton("Annuler");
+            cancelButton.setForeground(Color.WHITE);
+            cancelButton.setBackground(UIConstants.RED_BUTTON_COLOR);
+            cancelButton.setFocusPainted(false);
+            cancelButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+            cancelButton.addActionListener(_ -> addDialog.dispose());
+
+            dialogButtonPanel.add(saveButton);
+            dialogButtonPanel.add(cancelButton);
+
+            addDialog.add(dialogButtonPanel, BorderLayout.SOUTH);
+
+            addDialog.setVisible(true);
+        });
+
+        // Ajouter le bouton "Ajouter" au footer panel
+        footerPanel.add(addButton, BorderLayout.EAST);
+
+        // Ajouter le footer panel au bas du panneau principal
+        add(footerPanel, BorderLayout.SOUTH);
     }
 }

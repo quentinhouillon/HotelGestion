@@ -27,4 +27,9 @@ public class UIConstants {
     public static final Color ORANGE_BUTTON_COLOR = new Color(208, 135, 112); // #D08770
     public static final Color ORANGE_HOVER_COLOR = new Color(187, 122, 101);  // Couleur légèrement plus foncée
     public static final Color ORANGE_CLICK_COLOR = new Color(166, 109, 90);   // Couleur encore plus foncée
+
+    // Couleurs pour les boutons bleus
+    public static final Color BLUE_BUTTON_COLOR = new Color(96, 189, 255);    // #60BFFF
+    public static final Color BLUE_HOVER_COLOR = new Color(80, 170, 255);     // Couleur légèrement plus foncée
+    public static final Color BLUE_CLICK_COLOR = new Color(64, 150, 255);     // Couleur encore plus foncée
 }

@@ -22,9 +22,9 @@ public class ClientManagement {
 
     public void updateClient(int ID, String lastName, String name, String phone) {
         if (ID >= 0 && ID < clients.size()) {
-            clients.get(ID).lastName = lastName;
-            clients.get(ID).name = name;
-            clients.get(ID).phone = phone;
+            clients.get(ID).setLastName(lastName);
+            clients.get(ID).setName(name);
+            clients.get(ID).setPhone(phone);
         }
     }
 
@@ -41,7 +41,11 @@ public class ClientManagement {
 
     public Client[] searchClientByName(String name) {
         return clients.stream()
-                  .filter(client -> client.name.equalsIgnoreCase(name))
+                  .filter(client -> client.getName().equalsIgnoreCase(name))
                   .toArray(Client[]::new);
+    }
+
+    public void removeClient(Client client) {
+        clients.remove(client);
     }
 }

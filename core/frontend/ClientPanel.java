@@ -118,21 +118,30 @@ class ListPanel extends JPanel {
             JTextField lastNameField = new JTextField(lastName);
             lastNameField.setBackground(mainColor);
             lastNameField.setForeground(Color.WHITE);
-            lastNameField.setBorder(null);
+            lastNameField.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(mainColor), // Bordure extérieure
+                BorderFactory.createEmptyBorder(0, 10, 0, 0) // Marges internes
+            ));
             formPanel.add(lastNameField);
 
             formPanel.add(new JLabel("Prénom :"));
             JTextField firstNameField = new JTextField(firstName);
             firstNameField.setBackground(mainColor);
             firstNameField.setForeground(Color.WHITE);
-            firstNameField.setBorder(null);
+            firstNameField.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(mainColor), // Bordure extérieure
+                BorderFactory.createEmptyBorder(0, 10, 0, 0) // Marges internes
+            ));
             formPanel.add(firstNameField);
 
             formPanel.add(new JLabel("Téléphone :"));
             JTextField phoneField = new JTextField(phone);
             phoneField.setBackground(mainColor);
             phoneField.setForeground(Color.WHITE);
-            phoneField.setBorder(null);
+            phoneField.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(mainColor), // Bordure extérieure
+                BorderFactory.createEmptyBorder(0, 10, 0, 0) // Marges internes
+            ));
             formPanel.add(phoneField);
 
             modifyDialog.add(formPanel, BorderLayout.CENTER);
@@ -277,11 +286,20 @@ public class ClientPanel extends JPanel {
         searchPanel.setBackground(null);
 
         JTextField searchField = new JTextField();
-        searchField.setPreferredSize(new Dimension(200, 30)); // Taille du champ de recherche
+        searchField.setPreferredSize(new Dimension(200, 40)); // Largeur : 200px, Hauteur identique au bouton
+        searchField.setMinimumSize(new Dimension(200, 40));
+        searchField.setMaximumSize(new Dimension(200, 40));
         searchField.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(Color.GRAY, 1), // Bordure extérieure
             BorderFactory.createEmptyBorder(5, 5, 5, 5)   // Marges internes
         ));
+        searchField.setBackground(listColor); // Utiliser la couleur mainColor
+        searchField.setForeground(Color.WHITE); // Couleur du texte pour qu'il soit lisible
+        searchField.setCaretColor(Color.WHITE); // Couleur du curseur
+        searchField.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(listColor), // Bordure extérieure
+            BorderFactory.createEmptyBorder(0, 10, 0, 0) // Marges internes
+        )); 
 
         JButton searchButton = new JButton("Rechercher");
 
@@ -298,6 +316,20 @@ public class ClientPanel extends JPanel {
         searchButton.setBackground(UIConstants.BLUE_BUTTON_COLOR);
         searchButton.setFocusPainted(false);
         searchButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10)); // Marges internes
+
+        // Taille uniforme pour les boutons
+        Dimension buttonSize = new Dimension(40, 40); // Carré : largeur = hauteur = 40px
+
+        // Bouton "Rechercher"
+        searchButton.setPreferredSize(buttonSize);
+        searchButton.setMinimumSize(buttonSize);
+        searchButton.setMaximumSize(buttonSize);
+
+        // Taille spécifique pour le bouton "Rechercher"
+        Dimension searchButtonSize = new Dimension(100, 40); // Largeur : 100px, Hauteur : 40px
+        searchButton.setPreferredSize(searchButtonSize);
+        searchButton.setMinimumSize(searchButtonSize);
+        searchButton.setMaximumSize(searchButtonSize);
 
         // Action pour le bouton "Rechercher"
         searchButton.addActionListener(_ -> {
@@ -353,9 +385,68 @@ public class ClientPanel extends JPanel {
             }
         });
 
-        // Ajouter le champ de recherche et le bouton au searchPanel
-        searchPanel.add(searchField, BorderLayout.CENTER);
-        searchPanel.add(searchButton, BorderLayout.EAST);
+        // Modifier le layout du searchPanel pour un FlowLayout
+        searchPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0)); // Aucun espacement horizontal ou vertical
+
+        // Ajouter les composants dans le bon ordre
+        searchPanel.add(searchField); // Champ de recherche
+        searchPanel.add(searchButton); // Bouton "Rechercher"
+
+        // Déclarez et initialisez sortPanel avant de l'utiliser
+        JPanel sortPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
+        sortPanel.setBackground(null); // Fond transparent
+
+        // Ajouter les boutons de tri au sortPanel
+        JButton sortAscButton = new JButton("↑");
+        sortAscButton.setForeground(Color.WHITE);
+        sortAscButton.setBackground(UIConstants.BLUE_BUTTON_COLOR);
+        sortAscButton.setFocusPainted(false);
+        sortAscButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        sortAscButton.addActionListener(_ -> {
+            clients.sortBy((c1, c2) -> c1.getLastName().compareToIgnoreCase(c2.getLastName())); // Tri ascendant
+            reloadClientList(listContainer);
+        });
+
+        JButton sortDescButton = new JButton("↓");
+        sortDescButton.setForeground(Color.WHITE);
+        sortDescButton.setBackground(UIConstants.BLUE_BUTTON_COLOR);
+        sortDescButton.setFocusPainted(false);
+        sortDescButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        sortDescButton.addActionListener(_ -> {
+            clients.sortBy((c1, c2) -> c2.getLastName().compareToIgnoreCase(c1.getLastName())); // Tri descendant
+            reloadClientList(listContainer);
+        });
+
+        JButton sortDefaultButton = new JButton("-");
+        sortDefaultButton.setForeground(Color.WHITE);
+        sortDefaultButton.setBackground(UIConstants.BLUE_BUTTON_COLOR);
+        sortDefaultButton.setFocusPainted(false);
+        sortDefaultButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        sortDefaultButton.addActionListener(_ -> {
+            clients.resetOrder(); // Remet l'ordre d'origine
+            reloadClientList(listContainer);
+        });
+
+        // Boutons du sortPanel (carrés)
+        sortAscButton.setPreferredSize(buttonSize);
+        sortAscButton.setMinimumSize(buttonSize);
+        sortAscButton.setMaximumSize(buttonSize);
+
+        sortDescButton.setPreferredSize(buttonSize);
+        sortDescButton.setMinimumSize(buttonSize);
+        sortDescButton.setMaximumSize(buttonSize);
+
+        sortDefaultButton.setPreferredSize(buttonSize);
+        sortDefaultButton.setMinimumSize(buttonSize);
+        sortDefaultButton.setMaximumSize(buttonSize);
+
+        // Ajouter les boutons au sortPanel
+        sortPanel.add(sortAscButton);
+        sortPanel.add(sortDescButton);
+        sortPanel.add(sortDefaultButton);
+
+        // Ajouter sortPanel au searchPanel
+        searchPanel.add(sortPanel); // Boutons de tri
 
         // Ajouter le searchPanel au footerPanel
         footerPanel.add(searchPanel, BorderLayout.WEST);
@@ -390,6 +481,17 @@ public class ClientPanel extends JPanel {
             }
         });
 
+        // Bouton "Ajouter"
+        addButton.setPreferredSize(buttonSize);
+        addButton.setMinimumSize(buttonSize);
+        addButton.setMaximumSize(buttonSize);
+
+        // Taille spécifique pour le bouton "Ajouter"
+        Dimension addButtonSize = new Dimension(100, 40); // Largeur : 100px, Hauteur : 40px
+        addButton.setPreferredSize(addButtonSize);
+        addButton.setMinimumSize(addButtonSize);
+        addButton.setMaximumSize(addButtonSize);
+
         // Action pour le bouton "Ajouter"
         addButton.addActionListener(_ -> {
             JDialog addDialog = new JDialog(SwingUtilities.getWindowAncestor(this), "Ajouter un client", Dialog.ModalityType.APPLICATION_MODAL);
@@ -404,21 +506,30 @@ public class ClientPanel extends JPanel {
             JTextField lastNameField = new JTextField();
             lastNameField.setBackground(accentColor);
             lastNameField.setForeground(Color.WHITE);
-            lastNameField.setBorder(null);
+            lastNameField.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(accentColor), // Bordure extérieure
+                BorderFactory.createEmptyBorder(0, 10, 0, 0) // Marges internes
+            ));
             formPanel.add(lastNameField);
 
             formPanel.add(new JLabel("Prénom :"));
             JTextField firstNameField = new JTextField();
             firstNameField.setBackground(accentColor);
             firstNameField.setForeground(Color.WHITE);
-            firstNameField.setBorder(null);
+            firstNameField.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(accentColor), // Bordure extérieure
+                BorderFactory.createEmptyBorder(0, 10, 0, 0) // Marges internes
+            ));
             formPanel.add(firstNameField);
 
             formPanel.add(new JLabel("Téléphone :"));
             JTextField phoneField = new JTextField();
             phoneField.setBackground(accentColor);
             phoneField.setForeground(Color.WHITE);
-            phoneField.setBorder(null);
+            phoneField.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(accentColor), // Bordure extérieure
+                BorderFactory.createEmptyBorder(0, 10, 0, 0) // Marges internes
+            ));
             formPanel.add(phoneField);
 
             addDialog.add(formPanel, BorderLayout.CENTER);

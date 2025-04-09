@@ -1,17 +1,21 @@
 package core.backend;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class ClientManagement {
     static List<Client> clients;
+    private List<Client> originalOrder = new ArrayList<>();
 
     public ClientManagement() {
         clients = new ArrayList<>();
     }
 
-    public void addClient(String lastName, String name, String phone) {
-        clients.add(new Client(lastName, name, phone));
+    public void addClient(String lastName, String firstName, String phone) {
+        Client client = new Client(lastName, firstName, phone);
+        clients.add(client);
+        originalOrder.add(client); // Sauvegarder l'ordre d'origine
     }
 
     public void delClient(int ID) {
@@ -47,5 +51,13 @@ public class ClientManagement {
 
     public void removeClient(Client client) {
         clients.remove(client);
+    }
+
+    public void sortBy(Comparator<Client> comparator) {
+        clients.sort(comparator);
+    }
+
+    public void resetOrder() {
+        clients = new ArrayList<>(originalOrder); // Restaurer l'ordre d'origine
     }
 }

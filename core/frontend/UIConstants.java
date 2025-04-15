@@ -1,6 +1,7 @@
 package core.frontend;
 
 import java.awt.Color;
+import javax.swing.JButton;
 
 public class UIConstants {
     // Couleurs pour les boutons verts
@@ -32,4 +33,29 @@ public class UIConstants {
     public static final Color BLUE_BUTTON_COLOR = new Color(96, 189, 255);    // #60BFFF
     public static final Color BLUE_HOVER_COLOR = new Color(80, 170, 255);     // Couleur légèrement plus foncée
     public static final Color BLUE_CLICK_COLOR = new Color(64, 150, 255);     // Couleur encore plus foncée
+
+    public static void applyButtonEffects(JButton button, Color defaultColor, Color hoverColor, Color clickColor) {
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                button.setBackground(hoverColor); // Couleur au survol
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                button.setBackground(defaultColor); // Couleur par défaut
+            }
+
+            @Override
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                button.setBackground(clickColor); // Couleur lorsqu'il est pressé
+            }
+
+            @Override
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                button.setBackground(hoverColor); // Retour à la couleur au survol
+            }
+        });
+    }
 }
+

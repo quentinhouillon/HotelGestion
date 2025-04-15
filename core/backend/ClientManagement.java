@@ -3,6 +3,7 @@ package core.backend;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ClientManagement {
     static List<Client> clients;
@@ -43,10 +44,13 @@ public class ClientManagement {
         return null;
     }
 
-    public Client[] searchClientByName(String name) {
+    public List<Client> searchClientByName(String query) {
+        final String lowerCaseQuery = query.toLowerCase();
         return clients.stream()
-                  .filter(client -> client.getName().equalsIgnoreCase(name))
-                  .toArray(Client[]::new);
+            .filter(client -> client.getLastName().toLowerCase().contains(lowerCaseQuery) ||
+                              client.getName().toLowerCase().contains(lowerCaseQuery) ||
+                              client.getPhone().toLowerCase().contains(lowerCaseQuery))
+            .collect(Collectors.toList());
     }
 
     public void removeClient(Client client) {

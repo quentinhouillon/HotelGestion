@@ -60,8 +60,4 @@ public class ClientManagement {
     public void sortBy(Comparator<Client> comparator) {
         clients.sort(comparator);
     }
-
-    public void resetOrder() {
-        clients = new ArrayList<>(originalOrder); // Restaurer l'ordre d'origine
-    }
 }

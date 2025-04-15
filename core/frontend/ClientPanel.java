@@ -190,6 +190,7 @@ public class ClientPanel extends JPanel {
         clients.addClient("Martin", "Sophie", "0987654321");
         clients.addClient("Durand", "Pierre", "0147258369");
         clients.addClient("Dupuis", "Marie", "0678901234");
+        clients.removeClient(null);
 
         reloadClientList(listContainer);
 
@@ -259,7 +260,7 @@ public class ClientPanel extends JPanel {
             java.util.List<Client> filteredClients = clients.searchClientByName(query); 
 
             for (Client client : filteredClients) {
-                ListPanel clientRow = new ListPanel(client.getLastName(), client.getName(), client.getPhone(), e -> {
+                ListPanel clientRow = new ListPanel(client.getLastName(), client.getName(), client.getPhone(), _ -> {
                     clients.removeClient(client);
                     reloadClientList(listContainer);
                 }, listColor);
@@ -347,8 +348,7 @@ public class ClientPanel extends JPanel {
 
         // Action pour réinitialiser l'ordre des clients
         sortDefaultButton.addActionListener(_ -> {
-            clients.resetOrder(); // Remet l'ordre d'origine
-            reloadClientList(listContainer);
+            reloadClientList(listContainer);//recharge la liste des clients
         });
 
         // Ajouter les boutons au sortPanel
@@ -477,7 +477,8 @@ public class ClientPanel extends JPanel {
             String firstName = client.getName();
             String phone = client.getPhone();
 
-            ListPanel clientRow = new ListPanel(lastName, firstName, phone, _ -> {
+            final ListPanel[] clientRowWrapper = new ListPanel[1];
+            clientRowWrapper[0] = new ListPanel(lastName, firstName, phone, _ -> {
                 // Logique de suppression
                 JDialog confirmDialog = new JDialog(SwingUtilities.getWindowAncestor(this), "Confirmation", Dialog.ModalityType.APPLICATION_MODAL);
                 confirmDialog.setSize(300, 150);
@@ -498,6 +499,9 @@ public class ClientPanel extends JPanel {
 
                 yesButton.addActionListener(_ -> {
                     clients.removeClient(client); 
+                    // Supprimer la ligne du client
+                    listContainer.remove(clientRowWrapper[0]);
+                    listContainer.revalidate(); // Revalider le conteneur pour mettre à jour l'affichage
                     reloadClientList(listContainer); 
                     confirmDialog.dispose();
                 });
@@ -515,6 +519,7 @@ public class ClientPanel extends JPanel {
                 confirmDialog.add(buttonPanel, BorderLayout.SOUTH);
                 confirmDialog.setVisible(true);
             }, listColor);
+            ListPanel clientRow = clientRowWrapper[0];
 
             // Définir une taille fixe pour chaque case client
             clientRow.setPreferredSize(new Dimension(listContainer.getWidth(), 100)); // Largeur dynamique, Hauteur : 100px

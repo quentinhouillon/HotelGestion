@@ -1,33 +1,22 @@
 package core.backend;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-
-class Client {
-    String lastName;
-    String name;
-    String phone;
-
-    public Client(String lastName, String name, String phone) {
-        this.lastName = lastName;
-        this.name = name;
-        this.phone = phone;
-    }
-
-    public String[] detail() {
-        return new String[]{lastName, name, phone};
-    }
-}   
+import java.util.stream.Collectors;
 
 public class ClientManagement {
     static List<Client> clients;
+    private List<Client> originalOrder = new ArrayList<>();
 
     public ClientManagement() {
         clients = new ArrayList<>();
     }
 
-    public void addClient(String lastName, String name, String phone) {
-        clients.add(new Client(lastName, name, phone));
+    public void addClient(String lastName, String firstName, String phone) {
+        Client client = new Client(lastName, firstName, phone);
+        clients.add(client);
+        originalOrder.add(client); // Sauvegarder l'ordre d'origine
     }
 
     public void delClient(int ID) {
@@ -38,9 +27,9 @@ public class ClientManagement {
 
     public void updateClient(int ID, String lastName, String name, String phone) {
         if (ID >= 0 && ID < clients.size()) {
-            clients.get(ID).lastName = lastName;
-            clients.get(ID).name = name;
-            clients.get(ID).phone = phone;
+            clients.get(ID).setLastName(lastName);
+            clients.get(ID).setName(name);
+            clients.get(ID).setPhone(phone);
         }
     }
 
@@ -55,9 +44,20 @@ public class ClientManagement {
         return null;
     }
 
-    public Client[] searchClientByName(String name) {
+    public List<Client> searchClientByName(String query) {
+        final String lowerCaseQuery = query.toLowerCase();
         return clients.stream()
-                  .filter(client -> client.name.equalsIgnoreCase(name))
-                  .toArray(Client[]::new);
+            .filter(client -> client.getLastName().toLowerCase().contains(lowerCaseQuery) ||
+                              client.getName().toLowerCase().contains(lowerCaseQuery) ||
+                              client.getPhone().toLowerCase().contains(lowerCaseQuery))
+            .collect(Collectors.toList());
+    }
+
+    public void removeClient(Client client) {
+        clients.remove(client);
+    }
+
+    public void sortBy(Comparator<Client> comparator) {
+        clients.sort(comparator);
     }
 }

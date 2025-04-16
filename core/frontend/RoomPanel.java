@@ -99,13 +99,13 @@ class CardPanel extends JPanel {
 
         JLabel priceLabel = new JLabel("prix: " + this.price + "€");
         priceLabel.setFont(new Font("Arial", Font.PLAIN, 14));
-        priceLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        priceLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 10, 5));
         add(priceLabel);
-
-        JLabel descriptionLabel = new JLabel(this.description);
-        descriptionLabel.setBorder(BorderFactory.createEmptyBorder(10, 5, 20, 5));
-        add(descriptionLabel, BorderLayout.CENTER);
-
+        
+        // JLabel descriptionLabel = new JLabel(this.description);
+        // descriptionLabel.setBorder(BorderFactory.createEmptyBorder(10, 5, 20, 5));
+        // add(descriptionLabel, BorderLayout.CENTER);
+        
         JButton dialogButton = new JButton("Voir détail");
         dialogButton.setBackground(primaryColor);
         dialogButton.setFocusPainted(false);
@@ -178,7 +178,7 @@ class RoomDialog extends JDialog {
         contentPanel.add(priceLabel);
 
         JLabel descriptionLabel = new JLabel(description);
-        descriptionLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+        descriptionLabel.setFont(new Font("Arial", Font.PLAIN, 14));
         descriptionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         contentPanel.add(descriptionLabel);
 
@@ -219,10 +219,12 @@ public class RoomPanel extends JPanel {
     }
 
     private void createRoom() {
-        this.rooms.addRoom(new RoomType(0, "Description", 1, "./img/chambreSimple1.jpg"));
-        this.rooms.addRoom(new RoomType(0, "Description", 2, "./img/chambreSimple2.jpg"));
-        this.rooms.addRoom(new RoomType(1, "Description", 1, "./img/chambreDouble1.jpg"));
-        this.rooms.addRoom(new RoomType(3, "Description", 1, "./img/suitePrésidentielle.jpg"));
+        this.rooms.addRoom(new RoomType(0, "Chambre simple économique, idéale pour une personne, avec lit confortable et accès Wi-Fi gratuit.", 1, "./img/chambreSimple1.jpg"));
+        this.rooms.addRoom(new RoomType(0, "Chambre individuelle compacte, offrant un espace fonctionnel avec salle de bain privée et petit bureau.", 2, "./img/chambreSimple2.jpg"));
+        this.rooms.addRoom(new RoomType(1, "Chambre double économique, parfaite pour deux, avec lits jumeaux et salle de bain privée.", 1, "./img/chambreDouble1.jpg"));
+        this.rooms.addRoom(new RoomType(1, "Chambre standard pour deux personnes, offrant un lit double confortable et un espace de rangement.", 2, "./img/chambreDouble2.jpg"));
+        this.rooms.addRoom(new RoomType(2, "Suite spacieuse offrant un coin salon, lit double confortable et salle de bain avec baignoire, parfaite pour deux ou plus.", 3, "./img/suiteNormale1.jpg"));
+        this.rooms.addRoom(new RoomType(3, "Suite présidentielle prestigieuse offrant un espace de vie somptueux, terrasse privée et services exclusifs pour un séjour inoubliable", 4, "./img/suitePrésidentielle.jpg"));
     }
 
 }

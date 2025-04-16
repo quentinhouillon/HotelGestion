@@ -165,6 +165,5 @@ public class Main extends JFrame {
             Main mainFrame = new Main();
             mainFrame.setVisible(true);
         });
-
     }
 }

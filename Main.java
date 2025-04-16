@@ -36,8 +36,8 @@ public class Main extends JFrame {
 
         // Set scroll bar policies
 
-        // scrollableClientPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        // scrollableClientPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollableClientPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollableClientPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
         scrollableRoomPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollableRoomPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -83,7 +83,7 @@ public class Main extends JFrame {
         clientButton.setIcon(new ImageIcon(scaledClientImage));
         clientButton.addActionListener(_ -> {
                 main.removeAll();
-                main.add(scrollableClientPanel);
+                main.add(clientPanel);
                 main.revalidate();
                 main.repaint();
         });

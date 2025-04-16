@@ -4,11 +4,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class RoomManagemment {
-    static List<RoomType> rooms;
-
-    public RoomManagemment() {
-        rooms = new ArrayList<>();
-    }
+    static List<RoomType> rooms = new ArrayList<>();
 
     public void addRoom(RoomType room) {
         rooms.add(room);

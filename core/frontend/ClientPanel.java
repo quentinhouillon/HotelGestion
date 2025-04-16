@@ -7,8 +7,131 @@ import java.util.List;
 
 import core.backend.*;
 
+class ClientDialog extends JDialog {
+    ClientManagement clients = new ClientManagement();
+    Color mainColor;
+
+    public ClientDialog(Color mainColor) {
+        super((Frame) null, "Ajouter un client", true);
+        this.mainColor = mainColor;
+
+        initDialog(-1, null);
+    }
+    
+    public ClientDialog(Color mainColor, Client client, JLabel firstName, JLabel lastName, JLabel phone) {
+        super((Frame) null, "Modifier les informations d'un client", true);
+        this.mainColor = mainColor;
+
+        initDialog(client.getID(), client);
+        lastName.setText("Nom : " + client.getLastName());
+        firstName.setText("Prénom : " + client.getName());
+        phone.setText("Téléphone : " + client.getPhone());
+    }
+
+    private void initDialog(int ID, Client client) {
+        setSize(300, 200);
+        setLayout(new BorderLayout());
+        setLocationRelativeTo(this);
+
+        // Panel pour les champs de modification
+        JPanel formPanel = new JPanel(new GridLayout(3, 2, 10, 10));
+        formPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        formPanel.add(new JLabel("Nom :"));
+        JTextField lastNameField = new JTextField();
+        lastNameField.setBackground(mainColor);
+        lastNameField.setForeground(Color.WHITE);
+        lastNameField.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(mainColor), // Bordure extérieure
+            BorderFactory.createEmptyBorder(0, 10, 0, 0) // Marges internes
+        ));
+        formPanel.add(lastNameField);
+
+        formPanel.add(new JLabel("Prénom :"));
+        JTextField firstNameField = new JTextField();
+        firstNameField.setBackground(mainColor);
+        firstNameField.setForeground(Color.WHITE);
+        firstNameField.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(mainColor), // Bordure extérieure
+            BorderFactory.createEmptyBorder(0, 10, 0, 0) // Marges internes
+        ));
+        formPanel.add(firstNameField);
+
+        formPanel.add(new JLabel("Téléphone :"));
+        JTextField phoneField = new JTextField();
+        phoneField.setBackground(mainColor);
+        phoneField.setForeground(Color.WHITE);
+        phoneField.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(mainColor), // Bordure extérieure
+            BorderFactory.createEmptyBorder(0, 10, 0, 0) // Marges internes
+        ));
+        formPanel.add(phoneField);
+
+        if (client != null) {
+            firstNameField.setText(client.getName());
+            lastNameField.setText(client.getLastName());
+            phoneField.setText(client.getPhone());
+        }
+
+        this.add(formPanel, BorderLayout.CENTER);
+
+        // Panel pour les boutons
+        JPanel dialogButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+
+        // Bouton "Enregistrer" dans la boîte de dialogue
+        JButton saveButton = new JButton("Enregistrer");
+        saveButton.setForeground(Color.WHITE);
+        saveButton.setBackground(UIConstants.GREEN_BUTTON_COLOR);
+        saveButton.setFocusPainted(false);
+        saveButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10)); // Marges internes
+        saveButton.setOpaque(true);
+
+        // Effets visuels pour le bouton "Enregistrer"
+        UIConstants.applyButtonEffects(saveButton, UIConstants.GREEN_BUTTON_COLOR, UIConstants.GREEN_HOVER_COLOR, UIConstants.GREEN_CLICK_COLOR);
+
+        // Bouton "Annuler" dans la boîte de dialogue
+        JButton cancelButton = new JButton("Annuler");
+        cancelButton.setForeground(Color.WHITE);
+        cancelButton.setBackground(UIConstants.RED_BUTTON_COLOR);
+        cancelButton.setFocusPainted(false);
+        cancelButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10)); // Marges internes
+        cancelButton.setOpaque(true);
+
+        // Effets visuels pour le bouton "Annuler"
+        UIConstants.applyButtonEffects(cancelButton, UIConstants.RED_BUTTON_COLOR, UIConstants.RED_HOVER_COLOR, UIConstants.RED_CLICK_COLOR);
+
+        saveButton.addActionListener(_ -> {
+            String lastName = lastNameField.getText();
+            String firstName = firstNameField.getText();
+            String phone = phoneField.getText();
+
+            if (!lastName.isEmpty() && !firstName.isEmpty() && !phone.isEmpty()) {
+                if (client == null) clients.addClient(lastName, firstName, phone);
+                else clients.updateClient(client.getID(), lastName, firstName, phone); 
+                this.dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "Tous les champs doivent être remplis.", "Erreur", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        cancelButton.addActionListener(_ -> this.dispose());
+
+        dialogButtonPanel.add(saveButton);
+        dialogButtonPanel.add(cancelButton);
+
+        this.add(dialogButtonPanel, BorderLayout.SOUTH);
+        this.setVisible(true);
+    };
+}
+
 class ListPanel extends JPanel {
-    public ListPanel(String lastName, String firstName, String phone, ActionListener deleteAction, Color mainColor) {
+    ClientManagement clients = new ClientManagement();
+
+    public ListPanel(Client client, ActionListener deleteAction, Color mainColor) {
+        String lastName = client.getLastName();
+        String firstName = client.getName();
+        String phone = client.getPhone();
+
         setLayout(new BorderLayout());
         setBackground(mainColor);
         setBorder(BorderFactory.createCompoundBorder(
@@ -42,6 +165,7 @@ class ListPanel extends JPanel {
         deleteButton.setBackground(UIConstants.RED_BUTTON_COLOR);
         deleteButton.setFocusPainted(false);
         deleteButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10)); // Marges internes
+        deleteButton.setOpaque(true);
 
         // Effets visuels pour le bouton "Supprimer"
         UIConstants.applyButtonEffects(deleteButton, UIConstants.RED_BUTTON_COLOR, UIConstants.RED_HOVER_COLOR, UIConstants.RED_CLICK_COLOR);
@@ -59,98 +183,14 @@ class ListPanel extends JPanel {
         modifyButton.setBackground(UIConstants.GREEN_BUTTON_COLOR);
         modifyButton.setFocusPainted(false);
         modifyButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10)); // Marges internes
+        modifyButton.setOpaque(true);
 
         // Effets visuels pour le bouton "Modifier"
         UIConstants.applyButtonEffects(modifyButton, UIConstants.GREEN_BUTTON_COLOR, UIConstants.GREEN_HOVER_COLOR, UIConstants.GREEN_CLICK_COLOR);
 
         // Ajouter une action pour le bouton "Modifier" (exemple)
         modifyButton.addActionListener(_ -> {
-            // Créer une fenêtre JDialog pour modifier les informations du client
-            JDialog modifyDialog = new JDialog(SwingUtilities.getWindowAncestor(this), "Modifier le client", Dialog.ModalityType.APPLICATION_MODAL);
-            modifyDialog.setSize(300, 200);
-            modifyDialog.setLayout(new BorderLayout());
-            modifyDialog.setLocationRelativeTo(this);
-
-            // Panel pour les champs de modification
-            JPanel formPanel = new JPanel(new GridLayout(3, 2, 10, 10));
-            formPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-            formPanel.add(new JLabel("Nom :"));
-            JTextField lastNameField = new JTextField(lastName);
-            lastNameField.setBackground(mainColor);
-            lastNameField.setForeground(Color.WHITE);
-            lastNameField.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(mainColor), // Bordure extérieure
-                BorderFactory.createEmptyBorder(0, 10, 0, 0) // Marges internes
-            ));
-            formPanel.add(lastNameField);
-
-            formPanel.add(new JLabel("Prénom :"));
-            JTextField firstNameField = new JTextField(firstName);
-            firstNameField.setBackground(mainColor);
-            firstNameField.setForeground(Color.WHITE);
-            firstNameField.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(mainColor), // Bordure extérieure
-                BorderFactory.createEmptyBorder(0, 10, 0, 0) // Marges internes
-            ));
-            formPanel.add(firstNameField);
-
-            formPanel.add(new JLabel("Téléphone :"));
-            JTextField phoneField = new JTextField(phone);
-            phoneField.setBackground(mainColor);
-            phoneField.setForeground(Color.WHITE);
-            phoneField.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(mainColor), // Bordure extérieure
-                BorderFactory.createEmptyBorder(0, 10, 0, 0) // Marges internes
-            ));
-            formPanel.add(phoneField);
-
-            modifyDialog.add(formPanel, BorderLayout.CENTER);
-
-            // Panel pour les boutons
-            JPanel dialogButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-
-            // Bouton "Enregistrer" dans la boîte de dialogue
-            JButton saveButton = new JButton("Enregistrer");
-            saveButton.setForeground(Color.WHITE);
-            saveButton.setBackground(UIConstants.GREEN_BUTTON_COLOR);
-            saveButton.setFocusPainted(false);
-            saveButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10)); // Marges internes
-
-            // Effets visuels pour le bouton "Enregistrer"
-            UIConstants.applyButtonEffects(saveButton, UIConstants.GREEN_BUTTON_COLOR, UIConstants.GREEN_HOVER_COLOR, UIConstants.GREEN_CLICK_COLOR);
-
-            // Bouton "Annuler" dans la boîte de dialogue
-            JButton cancelButton = new JButton("Annuler");
-            cancelButton.setForeground(Color.WHITE);
-            cancelButton.setBackground(UIConstants.RED_BUTTON_COLOR);
-            cancelButton.setFocusPainted(false);
-            cancelButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10)); // Marges internes
-
-            // Effets visuels pour le bouton "Annuler"
-            UIConstants.applyButtonEffects(cancelButton, UIConstants.RED_BUTTON_COLOR, UIConstants.RED_HOVER_COLOR, UIConstants.RED_CLICK_COLOR);
-
-            saveButton.addActionListener(_ -> {
-                // Mettre à jour les informations du client
-                String newLastName = lastNameField.getText();
-                String newFirstName = firstNameField.getText();
-                String newPhone = phoneField.getText();
-
-                nameLabel.setText("Nom : " + newLastName);
-                firstNameLabel.setText("Prénom : " + newFirstName);
-                phoneLabel.setText("Téléphone : " + newPhone);
-
-                modifyDialog.dispose();
-            });
-
-            cancelButton.addActionListener(_ -> modifyDialog.dispose());
-
-            dialogButtonPanel.add(saveButton);
-            dialogButtonPanel.add(cancelButton);
-
-            modifyDialog.add(dialogButtonPanel, BorderLayout.SOUTH);
-
-            modifyDialog.setVisible(true);
+            new ClientDialog(mainColor, client, firstNameLabel, nameLabel, phoneLabel);
         });
 
         // Ajout des boutons au panel
@@ -161,8 +201,6 @@ class ListPanel extends JPanel {
         add(buttonPanel, BorderLayout.EAST);
     }
 }
-
-
 
 public class ClientPanel extends JPanel {
     Color listColor;
@@ -238,6 +276,7 @@ public class ClientPanel extends JPanel {
         searchButton.setBackground(UIConstants.BLUE_BUTTON_COLOR);
         searchButton.setFocusPainted(false);
         searchButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10)); // Marges internes
+        searchButton.setOpaque(true);
 
         // Taille uniforme pour les boutons
         Dimension buttonSize = new Dimension(40, 40); // Carré : largeur = hauteur = 40px
@@ -257,10 +296,10 @@ public class ClientPanel extends JPanel {
         searchButton.addActionListener(_ -> {
             String query = searchField.getText().toLowerCase(); // Récupérer la chaîne de recherche
             listContainer.removeAll(); // Supprime tous les composants existants
-            java.util.List<Client> filteredClients = clients.searchClientByName(query); 
+           Client[] filteredClients = clients.searchClientByName(query); 
 
             for (Client client : filteredClients) {
-                ListPanel clientRow = new ListPanel(client.getLastName(), client.getName(), client.getPhone(), _ -> {
+                ListPanel clientRow = new ListPanel(client, _ -> {
                     clients.removeClient(client);
                     reloadClientList(listContainer);
                 }, listColor);
@@ -301,6 +340,7 @@ public class ClientPanel extends JPanel {
         sortAscButton.setBackground(UIConstants.BLUE_BUTTON_COLOR);
         sortAscButton.setFocusPainted(false);
         sortAscButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        sortAscButton.setOpaque(true);
         sortAscButton.setPreferredSize(sortButtonSize);
         sortAscButton.setMinimumSize(sortButtonSize);
         sortAscButton.setMaximumSize(sortButtonSize);
@@ -320,6 +360,7 @@ public class ClientPanel extends JPanel {
         sortDescButton.setBackground(UIConstants.BLUE_BUTTON_COLOR);
         sortDescButton.setFocusPainted(false);
         sortDescButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        sortDescButton.setOpaque(true);
         sortDescButton.setPreferredSize(sortButtonSize);
         sortDescButton.setMinimumSize(sortButtonSize);
         sortDescButton.setMaximumSize(sortButtonSize);
@@ -339,6 +380,7 @@ public class ClientPanel extends JPanel {
         sortDefaultButton.setBackground(UIConstants.BLUE_BUTTON_COLOR);
         sortDefaultButton.setFocusPainted(false);
         sortDefaultButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        sortDefaultButton.setOpaque(true);
         sortDefaultButton.setPreferredSize(sortButtonSize);
         sortDefaultButton.setMinimumSize(sortButtonSize);
         sortDefaultButton.setMaximumSize(sortButtonSize);
@@ -348,13 +390,34 @@ public class ClientPanel extends JPanel {
 
         // Action pour réinitialiser l'ordre des clients
         sortDefaultButton.addActionListener(_ -> {
-            reloadClientList(listContainer);//recharge la liste des clients
+            clients.sortBy((c1, c2) -> Integer.compare(c1.getID(), c2.getID()));
+            reloadClientList(listContainer);
+        });
+
+        JButton invertSortDefaultButton = new JButton("◄");
+        invertSortDefaultButton.setForeground(Color.WHITE);
+        invertSortDefaultButton.setBackground(UIConstants.BLUE_BUTTON_COLOR);
+        invertSortDefaultButton.setFocusPainted(false);
+        invertSortDefaultButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        invertSortDefaultButton.setOpaque(true);
+        invertSortDefaultButton.setPreferredSize(sortButtonSize);
+        invertSortDefaultButton.setMinimumSize(sortButtonSize);
+        invertSortDefaultButton.setMaximumSize(sortButtonSize);
+
+        // Effets visuels pour le bouton "Tri par défaut"
+        UIConstants.applyButtonEffects(invertSortDefaultButton, UIConstants.BLUE_BUTTON_COLOR, UIConstants.BLUE_HOVER_COLOR, UIConstants.BLUE_CLICK_COLOR);
+
+        // Action pour réinitialiser l'ordre des clients
+        invertSortDefaultButton.addActionListener(_ -> {
+            clients.sortBy((c1, c2) -> Integer.compare(c2.getID(), c1.getID()));
+            reloadClientList(listContainer);
         });
 
         // Ajouter les boutons au sortPanel
         sortPanel.add(sortAscButton);
         sortPanel.add(sortDescButton);
         sortPanel.add(sortDefaultButton);
+        sortPanel.add(invertSortDefaultButton);
 
         // Ajouter sortPanel au searchPanel
         searchPanel.add(sortPanel); // Boutons de tri
@@ -368,6 +431,7 @@ public class ClientPanel extends JPanel {
         addButton.setBackground(UIConstants.PURPLE_BUTTON_COLOR);
         addButton.setFocusPainted(false);
         addButton.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20)); // Marges internes
+        addButton.setOpaque(true);
 
         // Effets visuels pour le bouton "Ajouter"
         UIConstants.applyButtonEffects(addButton, UIConstants.PURPLE_BUTTON_COLOR, UIConstants.PURPLE_HOVER_COLOR, UIConstants.PURPLE_CLICK_COLOR);
@@ -385,81 +449,8 @@ public class ClientPanel extends JPanel {
 
         // Action pour le bouton "Ajouter"
         addButton.addActionListener(_ -> {
-            JDialog addDialog = new JDialog(SwingUtilities.getWindowAncestor(this), "Ajouter un client", Dialog.ModalityType.APPLICATION_MODAL);
-            addDialog.setSize(300, 200);
-            addDialog.setLayout(new BorderLayout());
-            addDialog.setLocationRelativeTo(this);
-
-            JPanel formPanel = new JPanel(new GridLayout(3, 2, 10, 10));
-            formPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-            formPanel.add(new JLabel("Nom :"));
-            JTextField lastNameField = new JTextField();
-            lastNameField.setBackground(accentColor);
-            lastNameField.setForeground(Color.WHITE);
-            lastNameField.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(accentColor), // Bordure extérieure
-                BorderFactory.createEmptyBorder(0, 10, 0, 0) // Marges internes
-            ));
-            formPanel.add(lastNameField);
-
-            formPanel.add(new JLabel("Prénom :"));
-            JTextField firstNameField = new JTextField();
-            firstNameField.setBackground(accentColor);
-            firstNameField.setForeground(Color.WHITE);
-            firstNameField.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(accentColor), // Bordure extérieure
-                BorderFactory.createEmptyBorder(0, 10, 0, 0) // Marges internes
-            ));
-            formPanel.add(firstNameField);
-
-            formPanel.add(new JLabel("Téléphone :"));
-            JTextField phoneField = new JTextField();
-            phoneField.setBackground(accentColor);
-            phoneField.setForeground(Color.WHITE);
-            phoneField.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(accentColor), // Bordure extérieure
-                BorderFactory.createEmptyBorder(0, 10, 0, 0) // Marges internes
-            ));
-            formPanel.add(phoneField);
-
-            addDialog.add(formPanel, BorderLayout.CENTER);
-
-            JPanel dialogButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-
-            JButton saveButton = new JButton("Enregistrer");
-            saveButton.setForeground(Color.WHITE);
-            saveButton.setBackground(UIConstants.GREEN_BUTTON_COLOR);
-            saveButton.setFocusPainted(false);
-            saveButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-
-            saveButton.addActionListener(_ -> {
-                String lastName = lastNameField.getText();
-                String firstName = firstNameField.getText();
-                String phone = phoneField.getText();
-
-                if (!lastName.isEmpty() && !firstName.isEmpty() && !phone.isEmpty()) {
-                    clients.addClient(lastName, firstName, phone);
-                    reloadClientList(listContainer); 
-                    addDialog.dispose();
-                } else {
-                    JOptionPane.showMessageDialog(addDialog, "Tous les champs doivent être remplis.", "Erreur", JOptionPane.ERROR_MESSAGE);
-                }
-            });
-
-            JButton cancelButton = new JButton("Annuler");
-            cancelButton.setForeground(Color.WHITE);
-            cancelButton.setBackground(UIConstants.RED_BUTTON_COLOR);
-            cancelButton.setFocusPainted(false);
-            cancelButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-            cancelButton.addActionListener(_ -> addDialog.dispose());
-
-            dialogButtonPanel.add(saveButton);
-            dialogButtonPanel.add(cancelButton);
-
-            addDialog.add(dialogButtonPanel, BorderLayout.SOUTH);
-
-            addDialog.setVisible(true);
+            new ClientDialog(accentColor);
+            reloadClientList(listContainer);
         });
 
         // Ajouter le bouton "Ajouter" au footer panel
@@ -473,12 +464,8 @@ public class ClientPanel extends JPanel {
         listContainer.removeAll(); // Supprime tous les composants existants
 
         for (Client client : clients.getAll()) {
-            String lastName = client.getLastName();
-            String firstName = client.getName();
-            String phone = client.getPhone();
-
             final ListPanel[] clientRowWrapper = new ListPanel[1];
-            clientRowWrapper[0] = new ListPanel(lastName, firstName, phone, _ -> {
+            clientRowWrapper[0] = new ListPanel(client, _ -> {
                 // Logique de suppression
                 JDialog confirmDialog = new JDialog(SwingUtilities.getWindowAncestor(this), "Confirmation", Dialog.ModalityType.APPLICATION_MODAL);
                 confirmDialog.setSize(300, 150);
@@ -496,6 +483,7 @@ public class ClientPanel extends JPanel {
                 yesButton.setBackground(UIConstants.GREEN_BUTTON_COLOR);
                 yesButton.setFocusPainted(false);
                 yesButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+                yesButton.setOpaque(true);
 
                 yesButton.addActionListener(_ -> {
                     clients.removeClient(client); 
@@ -511,6 +499,7 @@ public class ClientPanel extends JPanel {
                 noButton.setBackground(UIConstants.RED_BUTTON_COLOR);
                 noButton.setFocusPainted(false);
                 noButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+                noButton.setOpaque(true);
                 noButton.addActionListener(_ -> confirmDialog.dispose());
 
                 buttonPanel.add(yesButton);

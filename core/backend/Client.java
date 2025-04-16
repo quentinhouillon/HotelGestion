@@ -1,6 +1,8 @@
 package core.backend;
 
 public class Client {
+    private static int autoID = 0;
+    private int id = autoID++;
     private String lastName;
     private String name;
     private String phone;
@@ -23,6 +25,10 @@ public class Client {
 
     public String getPhone() {
         return phone;
+    }
+
+    public int getID() {
+        return id;
     }
 
     // Setters

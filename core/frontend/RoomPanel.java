@@ -130,7 +130,7 @@ class RoomDialog extends JDialog {
     private Color accentColor;
 
     public RoomDialog(String type, String description, int etage, double price, ImageIcon image, Color color) {
-        super((Frame) null, true);
+        super((Frame) null, "Détail des chambres", true);
         this.type = type;
         this.description = description;
         this.etage = etage;

@@ -30,9 +30,9 @@ public class UIConstants {
     public static final Color ORANGE_CLICK_COLOR = new Color(166, 109, 90);   // Couleur encore plus foncée
 
     // Couleurs pour les boutons bleus
-    public static final Color BLUE_BUTTON_COLOR = new Color(96, 189, 255);    // #60BFFF
-    public static final Color BLUE_HOVER_COLOR = new Color(80, 170, 255);     // Couleur légèrement plus foncée
-    public static final Color BLUE_CLICK_COLOR = new Color(64, 150, 255);     // Couleur encore plus foncée
+    public static final Color BLUE_BUTTON_COLOR = new Color(94, 129, 172);    // #5E81AC
+    public static final Color BLUE_HOVER_COLOR = new Color(74, 101, 135);     // Couleur légèrement plus foncée
+    public static final Color BLUE_CLICK_COLOR = new Color(65, 89, 119);     // Couleur encore plus foncée
 
     public static void applyButtonEffects(JButton button, Color defaultColor, Color hoverColor, Color clickColor) {
         button.addMouseListener(new java.awt.event.MouseAdapter() {

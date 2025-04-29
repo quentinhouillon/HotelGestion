@@ -332,7 +332,7 @@ public class ClientPanel extends JPanel {
         sortPanel.setBackground(null); // Fond transparent
 
         // Taille spécifique pour les boutons du sortPanel (carrés, même hauteur que le bouton "Rechercher")
-        Dimension sortButtonSize = new Dimension(40, 40); // Carré : largeur = hauteur = 40px
+        Dimension sortButtonSize = new Dimension(40, 40); // Taille des boutons de tri
 
         // Bouton "Tri Ascendant"
         JButton sortAscButton = new JButton("▲");

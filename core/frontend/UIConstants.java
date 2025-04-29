@@ -1,7 +1,10 @@
 package core.frontend;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import javax.swing.JButton;
+import javax.swing.JTextField;
+import javax.swing.BorderFactory;
 
 public class UIConstants {
     // Couleurs pour les boutons verts
@@ -56,6 +59,31 @@ public class UIConstants {
                 button.setBackground(hoverColor); // Retour à la couleur au survol
             }
         });
+    }
+
+    public static JTextField createStyledTextField(Color backgroundColor, Color foregroundColor, Color borderColor) {
+        JTextField textField = new JTextField();
+        textField.setBackground(backgroundColor);
+        textField.setForeground(foregroundColor);
+        textField.setCaretColor(foregroundColor); // Couleur du curseur
+        textField.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(borderColor), // Bordure extérieure
+            BorderFactory.createEmptyBorder(0, 10, 0, 0) // Marges internes
+        ));
+        return textField;
+    }
+
+    public static JButton createStyledButton(String text, Color backgroundColor, Color hoverColor, Color clickColor, Dimension size) {
+        JButton button = new JButton(text);
+        button.setForeground(Color.WHITE);
+        button.setBackground(backgroundColor);
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10)); // Marges internes
+        button.setPreferredSize(size);
+        button.setMinimumSize(size);
+        button.setMaximumSize(size);
+        applyButtonEffects(button, backgroundColor, hoverColor, clickColor); // Appliquer les effets visuels
+        return button;
     }
 }
 

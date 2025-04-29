@@ -76,33 +76,18 @@ class ListPanel extends JPanel {
             formPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
             formPanel.add(new JLabel("Nom :"));
-            JTextField lastNameField = new JTextField(lastName);
-            lastNameField.setBackground(mainColor);
-            lastNameField.setForeground(Color.WHITE);
-            lastNameField.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(mainColor), // Bordure extérieure
-                BorderFactory.createEmptyBorder(0, 10, 0, 0) // Marges internes
-            ));
+            JTextField lastNameField = UIConstants.createStyledTextField(mainColor, Color.WHITE, mainColor);
+            lastNameField.setText(lastName); // Pré-remplir avec le nom existant
             formPanel.add(lastNameField);
 
             formPanel.add(new JLabel("Prénom :"));
-            JTextField firstNameField = new JTextField(firstName);
-            firstNameField.setBackground(mainColor);
-            firstNameField.setForeground(Color.WHITE);
-            firstNameField.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(mainColor), // Bordure extérieure
-                BorderFactory.createEmptyBorder(0, 10, 0, 0) // Marges internes
-            ));
+            JTextField firstNameField = UIConstants.createStyledTextField(mainColor, Color.WHITE, mainColor);
+            firstNameField.setText(firstName); // Pré-remplir avec le prénom existant
             formPanel.add(firstNameField);
 
             formPanel.add(new JLabel("Téléphone :"));
-            JTextField phoneField = new JTextField(phone);
-            phoneField.setBackground(mainColor);
-            phoneField.setForeground(Color.WHITE);
-            phoneField.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(mainColor), // Bordure extérieure
-                BorderFactory.createEmptyBorder(0, 10, 0, 0) // Marges internes
-            ));
+            JTextField phoneField = UIConstants.createStyledTextField(mainColor, Color.WHITE, mainColor);
+            phoneField.setText(phone); // Pré-remplir avec le numéro de téléphone existant
             formPanel.add(phoneField);
 
             modifyDialog.add(formPanel, BorderLayout.CENTER);
@@ -292,60 +277,24 @@ public class ClientPanel extends JPanel {
         sortPanel.setBackground(null); // Fond transparent
 
         // Taille spécifique pour les boutons du sortPanel (carrés, même hauteur que le bouton "Rechercher")
-        Dimension sortButtonSize = new Dimension(40, 40); // Carré : largeur = hauteur = 40px
+        Dimension sortButtonSize = new Dimension(40, 40); // Taille des boutons de tri
 
         // Bouton "Tri Ascendant"
-        JButton sortAscButton = new JButton("▲");
-        sortAscButton.setForeground(Color.WHITE);
-        sortAscButton.setBackground(UIConstants.BLUE_BUTTON_COLOR);
-        sortAscButton.setFocusPainted(false);
-        sortAscButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-        sortAscButton.setPreferredSize(sortButtonSize);
-        sortAscButton.setMinimumSize(sortButtonSize);
-        sortAscButton.setMaximumSize(sortButtonSize);
-
-        // Effets visuels pour le bouton "Tri Ascendant"
-        UIConstants.applyButtonEffects(sortAscButton, UIConstants.BLUE_BUTTON_COLOR, UIConstants.BLUE_HOVER_COLOR, UIConstants.BLUE_CLICK_COLOR);
-
-        // Action pour trier par ordre alphabétique ascendant
+        JButton sortAscButton = UIConstants.createStyledButton("▲", UIConstants.BLUE_BUTTON_COLOR, UIConstants.BLUE_HOVER_COLOR, UIConstants.BLUE_CLICK_COLOR, sortButtonSize);
         sortAscButton.addActionListener(_ -> {
             clients.sortBy((c1, c2) -> c1.getLastName().compareToIgnoreCase(c2.getLastName())); // Tri ascendant
             reloadClientList(listContainer);
         });
 
         // Bouton "Tri Descendant"
-        JButton sortDescButton = new JButton("▼");
-        sortDescButton.setForeground(Color.WHITE);
-        sortDescButton.setBackground(UIConstants.BLUE_BUTTON_COLOR);
-        sortDescButton.setFocusPainted(false);
-        sortDescButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-        sortDescButton.setPreferredSize(sortButtonSize);
-        sortDescButton.setMinimumSize(sortButtonSize);
-        sortDescButton.setMaximumSize(sortButtonSize);
-
-        // Effets visuels pour le bouton "Tri Descendant"
-        UIConstants.applyButtonEffects(sortDescButton, UIConstants.BLUE_BUTTON_COLOR, UIConstants.BLUE_HOVER_COLOR, UIConstants.BLUE_CLICK_COLOR);
-
-        // Action pour trier par ordre alphabétique descendant
+        JButton sortDescButton = UIConstants.createStyledButton("▼", UIConstants.BLUE_BUTTON_COLOR, UIConstants.BLUE_HOVER_COLOR, UIConstants.BLUE_CLICK_COLOR, sortButtonSize);
         sortDescButton.addActionListener(_ -> {
             clients.sortBy((c1, c2) -> c2.getLastName().compareToIgnoreCase(c1.getLastName())); // Tri descendant
             reloadClientList(listContainer);
         });
 
         // Bouton "Tri par défaut"
-        JButton sortDefaultButton = new JButton("►");
-        sortDefaultButton.setForeground(Color.WHITE);
-        sortDefaultButton.setBackground(UIConstants.BLUE_BUTTON_COLOR);
-        sortDefaultButton.setFocusPainted(false);
-        sortDefaultButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-        sortDefaultButton.setPreferredSize(sortButtonSize);
-        sortDefaultButton.setMinimumSize(sortButtonSize);
-        sortDefaultButton.setMaximumSize(sortButtonSize);
-
-        // Effets visuels pour le bouton "Tri par défaut"
-        UIConstants.applyButtonEffects(sortDefaultButton, UIConstants.BLUE_BUTTON_COLOR, UIConstants.BLUE_HOVER_COLOR, UIConstants.BLUE_CLICK_COLOR);
-
-        // Action pour réinitialiser l'ordre des clients
+        JButton sortDefaultButton = UIConstants.createStyledButton("►", UIConstants.BLUE_BUTTON_COLOR, UIConstants.BLUE_HOVER_COLOR, UIConstants.BLUE_CLICK_COLOR, sortButtonSize);
         sortDefaultButton.addActionListener(_ -> {
             clients.resetOrder(); // Remet l'ordre d'origine
             reloadClientList(listContainer);
@@ -394,23 +343,11 @@ public class ClientPanel extends JPanel {
             formPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
             formPanel.add(new JLabel("Nom :"));
-            JTextField lastNameField = new JTextField();
-            lastNameField.setBackground(accentColor);
-            lastNameField.setForeground(Color.WHITE);
-            lastNameField.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(accentColor), // Bordure extérieure
-                BorderFactory.createEmptyBorder(0, 10, 0, 0) // Marges internes
-            ));
+            JTextField lastNameField = UIConstants.createStyledTextField(accentColor, Color.WHITE, accentColor);
             formPanel.add(lastNameField);
 
             formPanel.add(new JLabel("Prénom :"));
-            JTextField firstNameField = new JTextField();
-            firstNameField.setBackground(accentColor);
-            firstNameField.setForeground(Color.WHITE);
-            firstNameField.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(accentColor), // Bordure extérieure
-                BorderFactory.createEmptyBorder(0, 10, 0, 0) // Marges internes
-            ));
+            JTextField firstNameField = UIConstants.createStyledTextField(accentColor, Color.WHITE, accentColor);
             formPanel.add(firstNameField);
 
             formPanel.add(new JLabel("Téléphone :"));

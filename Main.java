@@ -27,6 +27,7 @@ public class Main extends JFrame {
         HomePanel homePanel = new HomePanel();
         ClientPanel clientPanel = new ClientPanel(accentColor);
         RoomPanel roomPanel = new RoomPanel(accentColor, primaryColor);
+        ReservationPanel reservationPanel = new ReservationPanel();
 
         // Make the main panel scrollable
         JScrollPane scrollableClientPanel = new JScrollPane(clientPanel);
@@ -101,7 +102,13 @@ public class Main extends JFrame {
 
         JButton reservationButton = new JButton("Réservations");
         reservationButton.setIcon(new ImageIcon(scaledReservationImage));
-        // sidebar.add(reservationButton);
+        reservationButton.addActionListener(_ -> {
+            main.removeAll();
+            main.add(reservationPanel);
+            main.revalidate();
+            main.repaint();
+        });
+        sidebar.add(reservationButton);
 
         JButton stayButton = new JButton("Séjour");
         stayButton.setIcon(new ImageIcon(scaledStayImage));

@@ -95,25 +95,11 @@ class ListPanel extends JPanel {
             // Panel pour les boutons
             JPanel dialogButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
-            // Bouton "Enregistrer" dans la boîte de dialogue
-            JButton saveButton = new JButton("Enregistrer");
-            saveButton.setForeground(Color.WHITE);
-            saveButton.setBackground(UIConstants.GREEN_BUTTON_COLOR);
-            saveButton.setFocusPainted(false);
-            saveButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10)); // Marges internes
+            // Bouton "Enregistrer"
+            JButton saveButton = UIConstants.createStyledButton("Enregistrer", UIConstants.GREEN_BUTTON_COLOR, UIConstants.GREEN_HOVER_COLOR, UIConstants.GREEN_CLICK_COLOR, new Dimension(100, 40));
 
-            // Effets visuels pour le bouton "Enregistrer"
-            UIConstants.applyButtonEffects(saveButton, UIConstants.GREEN_BUTTON_COLOR, UIConstants.GREEN_HOVER_COLOR, UIConstants.GREEN_CLICK_COLOR);
-
-            // Bouton "Annuler" dans la boîte de dialogue
-            JButton cancelButton = new JButton("Annuler");
-            cancelButton.setForeground(Color.WHITE);
-            cancelButton.setBackground(UIConstants.RED_BUTTON_COLOR);
-            cancelButton.setFocusPainted(false);
-            cancelButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10)); // Marges internes
-
-            // Effets visuels pour le bouton "Annuler"
-            UIConstants.applyButtonEffects(cancelButton, UIConstants.RED_BUTTON_COLOR, UIConstants.RED_HOVER_COLOR, UIConstants.RED_CLICK_COLOR);
+            // Bouton "Annuler"
+            JButton cancelButton = UIConstants.createStyledButton("Annuler", UIConstants.RED_BUTTON_COLOR, UIConstants.RED_HOVER_COLOR, UIConstants.RED_CLICK_COLOR, new Dimension(100, 40));
 
             saveButton.addActionListener(_ -> {
                 // Mettre à jour les informations du client
@@ -339,28 +325,23 @@ public class ClientPanel extends JPanel {
             addDialog.setLayout(new BorderLayout());
             addDialog.setLocationRelativeTo(this);
 
-            JPanel formPanel = new JPanel(new GridLayout(3, 2, 10, 10));
-            formPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+            // Panel pour les champs d'ajout
+            JPanel addFormPanel = new JPanel(new GridLayout(3, 2, 10, 10));
+            addFormPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-            formPanel.add(new JLabel("Nom :"));
-            JTextField lastNameField = UIConstants.createStyledTextField(accentColor, Color.WHITE, accentColor);
-            formPanel.add(lastNameField);
+            addFormPanel.add(new JLabel("Nom :"));
+            JTextField addLastNameField = UIConstants.createStyledTextField(accentColor, Color.WHITE, accentColor);
+            addFormPanel.add(addLastNameField);
 
-            formPanel.add(new JLabel("Prénom :"));
-            JTextField firstNameField = UIConstants.createStyledTextField(accentColor, Color.WHITE, accentColor);
-            formPanel.add(firstNameField);
+            addFormPanel.add(new JLabel("Prénom :"));
+            JTextField addFirstNameField = UIConstants.createStyledTextField(accentColor, Color.WHITE, accentColor);
+            addFormPanel.add(addFirstNameField);
 
-            formPanel.add(new JLabel("Téléphone :"));
-            JTextField phoneField = new JTextField();
-            phoneField.setBackground(accentColor);
-            phoneField.setForeground(Color.WHITE);
-            phoneField.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(accentColor), // Bordure extérieure
-                BorderFactory.createEmptyBorder(0, 10, 0, 0) // Marges internes
-            ));
-            formPanel.add(phoneField);
+            addFormPanel.add(new JLabel("Téléphone :"));
+            JTextField addPhoneField = UIConstants.createStyledTextField(accentColor, Color.WHITE, accentColor);
+            addFormPanel.add(addPhoneField);
 
-            addDialog.add(formPanel, BorderLayout.CENTER);
+            addDialog.add(addFormPanel, BorderLayout.CENTER);
 
             JPanel dialogButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
@@ -371,9 +352,9 @@ public class ClientPanel extends JPanel {
             saveButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
             saveButton.addActionListener(_ -> {
-                String lastName = lastNameField.getText();
-                String firstName = firstNameField.getText();
-                String phone = phoneField.getText();
+                String lastName = addLastNameField.getText();
+                String firstName = addFirstNameField.getText();
+                String phone = addPhoneField.getText();
 
                 if (!lastName.isEmpty() && !firstName.isEmpty() && !phone.isEmpty()) {
                     clients.addClient(lastName, firstName, phone);

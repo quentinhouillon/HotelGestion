@@ -61,14 +61,14 @@ public class UIConstants {
         });
     }
 
-    public static JTextField createStyledTextField(Color backgroundColor, Color foregroundColor, Color borderColor) {
+    public static JTextField createStyledTextField(Color backgroundColor, Color textColor, Color borderColor) {
         JTextField textField = new JTextField();
         textField.setBackground(backgroundColor);
-        textField.setForeground(foregroundColor);
-        textField.setCaretColor(foregroundColor); // Couleur du curseur
+        textField.setForeground(textColor);
+        textField.setCaretColor(textColor); // Couleur du curseur
         textField.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(borderColor), // Bordure extérieure
-            BorderFactory.createEmptyBorder(0, 10, 0, 0) // Marges internes
+            BorderFactory.createLineBorder(borderColor, 1), // Bordure extérieure
+            BorderFactory.createEmptyBorder(5, 5, 5, 5)    // Marges internes
         ));
         return textField;
     }
@@ -82,7 +82,30 @@ public class UIConstants {
         button.setPreferredSize(size);
         button.setMinimumSize(size);
         button.setMaximumSize(size);
-        applyButtonEffects(button, backgroundColor, hoverColor, clickColor); // Appliquer les effets visuels
+
+        // Ajouter des effets visuels pour le bouton
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                button.setBackground(hoverColor);
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                button.setBackground(backgroundColor);
+            }
+
+            @Override
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                button.setBackground(clickColor);
+            }
+
+            @Override
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                button.setBackground(hoverColor);
+            }
+        });
+
         return button;
     }
 }

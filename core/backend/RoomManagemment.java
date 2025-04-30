@@ -38,6 +38,6 @@ public class RoomManagemment {
     }
 
     public RoomType[] getRooms() {
-        return rooms.toArray(new RoomType[0]);
+        return rooms.toArray(RoomType[]::new);
     }
 }

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ClientManagement {
-    static List<Client> clients = clients = new ArrayList<>();
+    static List<Client> clients =  new ArrayList<>();
 
 
     public Client[] getAll() {
@@ -14,8 +14,7 @@ public class ClientManagement {
     }
 
     public void addClient(String lastName, String firstName, String phone) {
-        Client client = new Client(lastName, firstName, phone);
-        clients.add(client);
+        clients.add(new Client(lastName, firstName, phone));
     }
 
     public void removeClient(Client client) {
@@ -34,9 +33,7 @@ public class ClientManagement {
     }
 
     public Client getClientById(int ID) {
-        if (ID >= 0 && ID < clients.size()) {
-            return clients.get(ID);
-        }
+        if (ID >= 0 && ID < clients.size()) return clients.get(ID);
         return null;
     }
 
@@ -51,5 +48,14 @@ public class ClientManagement {
 
     public void sortBy(Comparator<Client> comparator) {
         clients.sort(comparator);
+    }
+
+    public Client getByName(String name) {
+        for (Client client : clients) {
+            if (client.getName().equalsIgnoreCase(name.split(" ")[0]) && client.getLastName().equalsIgnoreCase(name.split(" ")[1])) {
+                return client;
+            }
+        }
+        return null;
     }
 }

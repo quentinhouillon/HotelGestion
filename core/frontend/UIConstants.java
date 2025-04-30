@@ -7,6 +7,12 @@ import javax.swing.JTextField;
 import javax.swing.BorderFactory;
 
 public class UIConstants {
+    // Main color
+    public static final Color MAIN_COLOR = new Color(0x2e3440);
+
+    // Accent Color
+    public static final  Color ACCENT_COLOR = new Color(0x3b4252);
+
     // Couleurs pour les boutons verts
     public static final Color GREEN_BUTTON_COLOR = new Color(163, 190, 140); // #A3BE8C
     public static final Color GREEN_HOVER_COLOR = new Color(129, 161, 105);  // Couleur légèrement plus foncée
@@ -73,21 +79,21 @@ public class UIConstants {
         return textField;
     }
 
-    public static JButton createStyledButton(String text, Color backgroundColor, Color hoverColor, Color clickColor, Dimension size) {
-        JButton button = new JButton(text);
+    public static void createStyledButton(JButton button, Color backgroundColor, Color foregroundColor) {
         button.setForeground(Color.WHITE);
         button.setBackground(backgroundColor);
         button.setFocusPainted(false);
+        button.setOpaque(true);
         button.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10)); // Marges internes
-        button.setPreferredSize(size);
-        button.setMinimumSize(size);
-        button.setMaximumSize(size);
+        // button.setPreferredSize(size);
+        // button.setMinimumSize(size);
+        // button.setMaximumSize(size);
 
         // Ajouter des effets visuels pour le bouton
         button.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                button.setBackground(hoverColor);
+                button.setBackground(backgroundColor.darker());
             }
 
             @Override
@@ -97,16 +103,14 @@ public class UIConstants {
 
             @Override
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                button.setBackground(clickColor);
+                button.setBackground(backgroundColor.darker().darker());
             }
 
             @Override
             public void mouseReleased(java.awt.event.MouseEvent evt) {
-                button.setBackground(hoverColor);
+                button.setBackground(backgroundColor.darker());
             }
         });
-
-        return button;
     }
 }
 

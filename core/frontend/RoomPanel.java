@@ -106,7 +106,7 @@ class CardPanel extends JPanel {
         // descriptionLabel.setBorder(BorderFactory.createEmptyBorder(10, 5, 20, 5));
         // add(descriptionLabel, BorderLayout.CENTER);
         
-        JButton dialogButton = new JButton("Voir détail");
+        JButton dialogButton = new JButton("Voir détails");
         dialogButton.setBackground(primaryColor);
         dialogButton.setFocusPainted(false);
         dialogButton.setBorderPainted(false);

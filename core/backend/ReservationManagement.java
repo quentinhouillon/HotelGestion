@@ -34,6 +34,15 @@ public class ReservationManagement {
         return false;
     }
 
+
+    public boolean contains(Reservation reservation_) {
+        for (Reservation res : this.reservation) {
+            if (reservation_ == res)
+                return true;
+        }
+        return false;
+    }
+
     public Reservation[] search(String clientName) {
         if (clientName.trim().isEmpty()) return this.getAll();
 

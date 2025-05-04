@@ -422,7 +422,7 @@ public class ReservationPanel extends JPanel {
                 confirmDialog.setLayout(new BorderLayout());
                 confirmDialog.setLocationRelativeTo(this);
 
-                JLabel confirmLabel = new JLabel("Êtes-vous sûr de vouloir annuler la reservation ?");
+                JLabel confirmLabel = new JLabel("Êtes-vous sûr de vouloir annuler la reservation ? Ceci supprimera le séjour associé");
                 confirmLabel.setHorizontalAlignment(SwingConstants.CENTER);
                 confirmDialog.add(confirmLabel, BorderLayout.CENTER);
 

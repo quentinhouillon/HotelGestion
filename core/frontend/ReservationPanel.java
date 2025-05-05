@@ -418,7 +418,8 @@ public class ReservationPanel extends JPanel {
         for (Reservation reservation : reservationTab) {
             LsPanel lsPanel = new LsPanel(reservation, _ -> {
                 JDialog confirmDialog = new JDialog(SwingUtilities.getWindowAncestor(this), "Confirmation", Dialog.ModalityType.APPLICATION_MODAL);
-                confirmDialog.setSize(350, 150);
+                confirmDialog.setSize(550, 150);
+                confirmDialog.setResizable(false);
                 confirmDialog.setLayout(new BorderLayout());
                 confirmDialog.setLocationRelativeTo(this);
 

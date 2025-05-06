@@ -1,63 +1,61 @@
 package core.backend;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-
-class Client {
-    String lastName;
-    String name;
-    String phone;
-
-    public Client(String lastName, String name, String phone) {
-        this.lastName = lastName;
-        this.name = name;
-        this.phone = phone;
-    }
-
-    public String[] detail() {
-        return new String[]{lastName, name, phone};
-    }
-}   
+import java.util.stream.Collectors;
 
 public class ClientManagement {
-    static List<Client> clients;
+    static List<Client> clients =  new ArrayList<>();
 
-    public ClientManagement() {
-        clients = new ArrayList<>();
+
+    public Client[] getAll() {
+        return clients.toArray(Client[]::new);
     }
 
-    public void addClient(String lastName, String name, String phone) {
-        clients.add(new Client(lastName, name, phone));
+    public void addClient(String lastName, String firstName, String phone) {
+        clients.add(new Client(lastName, firstName, phone));
     }
 
-    public void delClient(int ID) {
-        if (ID >= 0 && ID < clients.size()) {
-            clients.remove(ID);
-        }
+    public void removeClient(Client client) {
+        clients.remove(client);
     }
 
     public void updateClient(int ID, String lastName, String name, String phone) {
-        if (ID >= 0 && ID < clients.size()) {
-            clients.get(ID).lastName = lastName;
-            clients.get(ID).name = name;
-            clients.get(ID).phone = phone;
+        for (Client client : clients) {
+            if (client.getID() == ID) {
+                client.setLastName(lastName);
+                client.setName(name);
+                client.setPhone(phone);
+                break;
+            }
         }
-    }
-
-    public Client[] getAll() {
-        return clients.toArray(new Client[0]);
     }
 
     public Client getClientById(int ID) {
-        if (ID >= 0 && ID < clients.size()) {
-            return clients.get(ID);
-        }
+        if (ID >= 0 && ID < clients.size()) return clients.get(ID);
         return null;
     }
 
-    public Client[] searchClientByName(String name) {
+    public Client[] searchClientByName(String query) {
+        final String lowerCaseQuery = query.toLowerCase();
         return clients.stream()
-                  .filter(client -> client.name.equalsIgnoreCase(name))
-                  .toArray(Client[]::new);
+            .filter(client -> client.getLastName().toLowerCase().contains(lowerCaseQuery) ||
+                      client.getName().toLowerCase().contains(lowerCaseQuery) ||
+                      client.getPhone().toLowerCase().contains(lowerCaseQuery))
+            .toArray(Client[]::new);
+    }
+
+    public void sortBy(Comparator<Client> comparator) {
+        clients.sort(comparator);
+    }
+
+    public Client getByName(String name) {
+        for (Client client : clients) {
+            if (client.getName().equalsIgnoreCase(name.split(" ")[0]) && client.getLastName().equalsIgnoreCase(name.split(" ")[1])) {
+                return client;
+            }
+        }
+        return null;
     }
 }

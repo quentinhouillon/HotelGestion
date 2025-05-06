@@ -7,10 +7,10 @@ class MiniBar {
     static final String[] boissons = {"Eau", "Soda", "Jus de fruit","Thé",
                                       "Café", "Vin blanc", "Vin rouge",
                                       "Vin rosé", "Bière", "Champagne"};
-    static final double[] prices = {3.0, 4.25, 3.5, 4.0, 4.0, 12.0, 12.0,
-                                    12., 8.5, 17.5};
+    static final double[] prices = {3.0, 4.25, 3.50, 4.0, 4.0, 12.0, 12.0,
+                                    12.0, 8.50, 17.50};
 
-    public String[] getBoisson() {
+    public String[] getBoissons() {
         return boissons;
     }
 
@@ -28,27 +28,41 @@ class Payment {
         this.PaymentMode = paymentMode;
         this.price = price;
     }
+
+    public String[] getAllPayments() {
+        return allPaymentMode;
+    }
 }
 
 public class Stay {
-    Client client;
+    Reservation reservation;
     Payment payment;
     List<String> consomation;
     List<Double> price;
+    static MiniBar miniBar;
+    static Payment payments;
 
-    public Stay(Client client, Payment payment) {
-        this.client = client;
-        this.payment = payment;
+    public Stay(Reservation reservation) {
+        this.reservation = reservation;
         this.consomation = new ArrayList<>();
         this.price = new ArrayList<>();
+        miniBar = new MiniBar();
     }
 
     public Client getClient() {
-        return client;
+        return this.reservation.getClient();
+    }
+
+    public Reservation getReservation() {
+        return this.reservation;
     }
 
     public Payment getPayment() {
-        return payment;
+        return this.payment;
+    }
+
+    public void setPayment(Payment payment_) {
+        this.payment = payment_;
     }
 
     public String[] getConso() {
@@ -69,5 +83,13 @@ public class Stay {
             this.consomation.remove(ID);
             this.price.remove(ID);
         }
+    }
+
+    public String[] getAllBoissons() {
+        return this.miniBar.getBoissons();
+    }
+
+    public double[] getAllPrices() {
+        return this.miniBar.getPrices();
     }
 }

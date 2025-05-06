@@ -2,6 +2,7 @@ import java.awt.*;
 import javax.swing.*;
 
 import core.frontend.*;
+import core.frontend.RoomPanel;
 
 public class Main extends JFrame {
     public Main() {
@@ -18,14 +19,30 @@ public class Main extends JFrame {
         UIManager.put("Label.foreground", Color.WHITE);
 
         setTitle("Hotel Continental");
-        setPreferredSize(new Dimension(850, 725));
-        setMinimumSize(new Dimension(700, 650));
+        setPreferredSize(new Dimension(850, 750));
+        setMinimumSize(new Dimension(750, 700));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pack();
 
         HomePanel homePanel = new HomePanel();
         ClientPanel clientPanel = new ClientPanel(accentColor);
-        RoomPanel roomPanel = new RoomPanel(accentColor);
+        RoomPanel roomPanel = new RoomPanel(accentColor, primaryColor);
+        ReservationPanel reservationPanel = new ReservationPanel();
+        StayPanel stayPanel = new StayPanel();
+
+        // Make the main panel scrollable
+        JScrollPane scrollableClientPanel = new JScrollPane(clientPanel);
+        scrollableClientPanel.setBorder(null);
+        JScrollPane scrollableRoomPanel = new JScrollPane(roomPanel);
+        scrollableRoomPanel.setBorder(null);
+
+        // Set scroll bar policies
+
+        scrollableClientPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollableClientPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+        scrollableRoomPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollableRoomPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         
         JPanel main = new JPanel();
         main.setLayout(new BorderLayout());
@@ -64,7 +81,7 @@ public class Main extends JFrame {
         });
         sidebar.add(homeButton);
 
-        JButton clientButton = new JButton("Client");
+        JButton clientButton = new JButton("Clients");
         clientButton.setIcon(new ImageIcon(scaledClientImage));
         clientButton.addActionListener(_ -> {
                 main.removeAll();
@@ -78,7 +95,7 @@ public class Main extends JFrame {
         roomButton.setIcon(new ImageIcon(scaledRoomImage));
         roomButton.addActionListener(_ -> {
             main.removeAll();
-            main.add(roomPanel);
+            main.add(scrollableRoomPanel);
             main.revalidate();
             main.repaint();
         });
@@ -86,11 +103,23 @@ public class Main extends JFrame {
 
         JButton reservationButton = new JButton("Réservations");
         reservationButton.setIcon(new ImageIcon(scaledReservationImage));
-        // sidebar.add(reservationButton);
+        reservationButton.addActionListener(_ -> {
+            main.removeAll();
+            main.add(reservationPanel);
+            main.revalidate();
+            main.repaint();
+        });
+        sidebar.add(reservationButton);
 
-        JButton stayButton = new JButton("Séjour");
+        JButton stayButton = new JButton("Séjours");
         stayButton.setIcon(new ImageIcon(scaledStayImage));
-        // sidebar.add(stayButton);
+        stayButton.addActionListener(_ -> {
+            main.removeAll();
+            main.add(stayPanel);
+            main.revalidate();
+            main.repaint();
+        });
+        sidebar.add(stayButton);
 
         // Add buttons to an array
         JButton[] buttons = {roomButton, homeButton, reservationButton, stayButton, clientButton};
@@ -150,6 +179,5 @@ public class Main extends JFrame {
             Main mainFrame = new Main();
             mainFrame.setVisible(true);
         });
-
     }
 }

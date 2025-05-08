@@ -19,7 +19,7 @@ class ClientDialog extends JDialog {
     }
     
     public ClientDialog(Color mainColor, Client client, JLabel firstName, JLabel lastName, JLabel phone) {
-        super((Frame) null, "Modifier les informations d'un client", true);
+        super((Frame) null, "Modification", true);
         this.mainColor = mainColor;
 
         initDialog(client.getID(), client);
@@ -29,7 +29,7 @@ class ClientDialog extends JDialog {
     }
 
     private void initDialog(int ID, Client client) {
-        setSize(300, 200);
+        setSize(350, 200);
         setLayout(new BorderLayout());
         setLocationRelativeTo(this);
 
@@ -224,11 +224,10 @@ public class ClientPanel extends JPanel {
         listContainer.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         // Ajouter les clients au conteneur
-        clients.addClient("Dupoont", "Jean", "0123456789");
-        clients.addClient("Martin", "Sophie", "0987654321");
-        clients.addClient("Durand", "Pierre", "0147258369");
-        clients.addClient("Dupuis", "Marie", "0678901234");
-        clients.removeClient(null);
+        // clients.addClient("Dupoont", "Jean", "0123456789");
+        // clients.addClient("Martin", "Sophie", "0987654321");
+        // clients.addClient("Durand", "Pierre", "0147258369");
+        // clients.addClient("Dupuis", "Marie", "0678901234");
 
         reloadClientList(listContainer);
 

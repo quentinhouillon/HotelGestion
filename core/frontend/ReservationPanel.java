@@ -234,7 +234,7 @@ class ReservationDialog extends JDialog {
             int roomId = Integer.parseInt(selectedRoomNumber.replaceAll("[^0-9]", ""));
 
             Client selectedClient = clients.getByName((String) selectedClientName);
-            RoomType selectedRoom = rooms.getRooms()[roomId];
+            Room selectedRoom = rooms.getRoomByNumRoom(roomId);
 
             reservations.add(selectedClient, selectedRoom, tabDates[0], tabDates[1]);
             dispose();
@@ -261,9 +261,9 @@ class ReservationDialog extends JDialog {
             clientsName.add(client.getName() + " " + client.getLastName());
         }
 
-        for (RoomType room : rooms.getRooms()) {
-            if (!reservations.isRoomReserved(room.getID(), this.tabDates[0], this.tabDates[1])) {
-                roomsNumber.add("Chambre n°" + room.getID());
+        for (Room room : rooms.getRooms()) {
+            if (!reservations.isRoomReserved(room.getroomNumber(), this.tabDates[0], this.tabDates[1])) {
+                roomsNumber.add("Chambre n°" + room.getroomNumber());
             }
         }
     }
@@ -275,7 +275,7 @@ class LsPanel extends JPanel {
     public LsPanel(Reservation reservation, ActionListener deleteAction) {
         String clientName = reservation.getClient().getName();
         String clientLastName = reservation.getClient().getLastName();
-        int roomNumber = reservation.getRoom().getID();
+        int roomNumber = reservation.getRoom().getroomNumber();
         LocalDate start = reservation.getDuration()[0];
         LocalDate end = reservation.getDuration()[1];
 

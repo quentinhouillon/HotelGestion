@@ -8,7 +8,7 @@ import java.util.List;
 public class ReservationManagement {
     static List<Reservation> reservation = new ArrayList<>();
 
-    public void add(Client client, RoomType room, LocalDate start, LocalDate end) {
+    public void add(Client client, Room room, LocalDate start, LocalDate end) {
         reservation.add(new Reservation(client, room, start, end));
     }
 
@@ -21,7 +21,7 @@ public class ReservationManagement {
     }
 
     public boolean isRoomReserved(int id, LocalDate startDate, LocalDate endDate) {
-        Room room = new RoomManagemment().getRoomByID(id);
+        Room room = new RoomManagemment().getRoomByNumRoom(id);
         if (room == null) return false;
 
         for (Reservation res : reservation) {
@@ -33,7 +33,6 @@ public class ReservationManagement {
         }
         return false;
     }
-
 
     public boolean contains(Reservation reservation_) {
         for (Reservation res : this.reservation) {
@@ -55,12 +54,12 @@ public class ReservationManagement {
         return result.toArray(Reservation[]::new);
     }
     
-    public Reservation[] search(int roomID) {
-        if (roomID < 0) return this.getAll();
+    public Reservation[] search(int roomNumber) {
+        if (roomNumber < 0) return this.getAll();
 
         List<Reservation> result = new ArrayList<>();
         for (Reservation res : reservation) {
-            if (res.getRoom().getID() == roomID) {
+            if (res.getRoom().getroomNumber() == roomNumber) {
                 result.add(res);
             }
         }

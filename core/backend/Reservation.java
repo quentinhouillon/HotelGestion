@@ -4,11 +4,11 @@ import java.time.LocalDate;
 
 public class Reservation {
     Client client;
-    RoomType room;
+    Room room;
     LocalDate start;
     LocalDate end;
 
-    public Reservation(Client client, RoomType room, LocalDate start, LocalDate end) {
+    public Reservation(Client client, Room room, LocalDate start, LocalDate end) {
         this.client = client;
         this.room = room;
         this.start = start;
@@ -19,7 +19,7 @@ public class Reservation {
         return this.client;
     }
 
-    public RoomType getRoom() {
+    public Room getRoom() {
         return this.room;
     }
 

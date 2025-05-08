@@ -1,15 +1,14 @@
 package core.backend;
 
 public class Client {
-    private static int autoID = 0;
     private int id;
     private String lastName;
     private String name;
     private String phone;
 
     // Constructeur
-    public Client(String lastName, String name, String phone) {
-        this.id = autoID++;
+    public Client(int id, String lastName, String name, String phone) {
+        this.id = id;
         this.lastName = lastName;
         this.name = name;
         this.phone = phone;
@@ -43,5 +42,9 @@ public class Client {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public void setID(int id) {
+        this.id = id;
     }
 }

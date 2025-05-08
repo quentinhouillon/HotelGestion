@@ -198,12 +198,11 @@ public class RoomPanel extends JPanel {
     public RoomPanel(Color cardColor, Color primary) {
         this.cardColor = cardColor;
         this.primaryColor = primary;
-        createRoom();
 
         setLayout(new WrapLayout(FlowLayout.LEFT, 10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        for (RoomType room : this.rooms.getRooms()) {
+        for (Room room : this.rooms.getRooms()) {
             ImageIcon roomImage = new ImageIcon(room.getLinkImage());
             CardPanel card = new CardPanel(
                 room.getType(),
@@ -217,14 +216,4 @@ public class RoomPanel extends JPanel {
             add(card);
         }
     }
-
-    private void createRoom() {
-        this.rooms.addRoom(new RoomType(0, "Chambre simple économique, idéale pour une personne, avec lit confortable et accès Wi-Fi gratuit.", 1, "./img/chambreSimple1.jpg"));
-        this.rooms.addRoom(new RoomType(0, "Chambre individuelle compacte, offrant un espace fonctionnel avec salle de bain privée et petit bureau.", 2, "./img/chambreSimple2.jpg"));
-        this.rooms.addRoom(new RoomType(1, "Chambre double économique, parfaite pour deux, avec lits jumeaux et salle de bain privée.", 1, "./img/chambreDouble1.jpg"));
-        this.rooms.addRoom(new RoomType(1, "Chambre standard pour deux personnes, offrant un lit double confortable et un espace de rangement.", 2, "./img/chambreDouble2.jpg"));
-        this.rooms.addRoom(new RoomType(2, "Suite spacieuse offrant un coin salon, lit double confortable et salle de bain avec baignoire, parfaite pour deux ou plus.", 3, "./img/suiteNormale1.jpg"));
-        this.rooms.addRoom(new RoomType(3, "Suite présidentielle prestigieuse offrant un espace de vie somptueux, terrasse privée et services exclusifs pour un séjour inoubliable", 4, "./img/suitePrésidentielle.jpg"));
-    }
-
 }

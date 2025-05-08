@@ -1,8 +1,7 @@
+import core.backend.ReservationManagement;
+import core.frontend.*;
 import java.awt.*;
 import javax.swing.*;
-
-import core.frontend.*;
-import core.frontend.RoomPanel;
 
 public class Main extends JFrame {
     public Main() {
@@ -24,7 +23,8 @@ public class Main extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pack();
 
-        HomePanel homePanel = new HomePanel();
+        ReservationManagement reservationManagement = new ReservationManagement();
+        HomePanel homePanel = new HomePanel(reservationManagement);
         ClientPanel clientPanel = new ClientPanel(accentColor);
         RoomPanel roomPanel = new RoomPanel(accentColor, primaryColor);
         ReservationPanel reservationPanel = new ReservationPanel();

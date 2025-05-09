@@ -2,6 +2,9 @@ package core.backend;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import core.model.Database;
 
 class MiniBar {
     static final String[] boissons = {"Eau", "Soda", "Jus de fruit","Thé",
@@ -22,11 +25,9 @@ class MiniBar {
 class Payment {
     static final String[] allPaymentMode = {"Carte bleue", "Espèce", "Chèque"};
     String PaymentMode;
-    double price;
 
     public Payment(String paymentMode, double price) {
         this.PaymentMode = paymentMode;
-        this.price = price;
     }
 
     public String[] getAllPayments() {
@@ -35,17 +36,21 @@ class Payment {
 }
 
 public class Stay {
+    int id;
     Reservation reservation;
     Payment payment;
     List<String> consomation;
     List<Double> price;
+    Database database;
     static MiniBar miniBar;
     static Payment payments;
 
-    public Stay(Reservation reservation) {
+    public Stay(int id, Reservation reservation) {
+        this.id = id;
         this.reservation = reservation;
         this.consomation = new ArrayList<>();
         this.price = new ArrayList<>();
+        this.database = new Database();
         miniBar = new MiniBar();
     }
 
@@ -61,19 +66,45 @@ public class Stay {
         return this.payment;
     }
 
+    public int getID() {
+        return this.id;
+    }
+
     public void setPayment(Payment payment_) {
         this.payment = payment_;
     }
 
-    public String[] getConso() {
+    public String[] getConso(int stayID_) {
+        this.consomation.clear();
+        List<Map<String, Object>> rows = database.executeReadQuery(("SELECT * FROM Consommation"));
+        for (Map<String, Object> row : rows) {
+            int stayID = (int) row.get("stay_id");
+            String conso = (String) row.get("conso");
+
+            if (stayID == stayID_) {
+                this.consomation.add(conso);
+            }
+        }
         return this.consomation.toArray(new String[0]);
     }
 
-    public double[] getPrice() {
+    public double[] getPrice(int stayID_) {
+        this.price.clear();
+        List<Map<String, Object>> rows = database.executeReadQuery(("SELECT * FROM Consommation"));
+        for (Map<String, Object> row : rows) {
+            int stayID = (int) row.get("stay_id");
+            Double price_ = (Double) row.get("price");
+
+            if (stayID == stayID_) {
+                this.price.add(price_);
+            }
+        }
         return this.price.stream().mapToDouble(Double::doubleValue).toArray(); // Converti List<Double> en double[]
     }
 
     public void add(String consomation_, double price_) {
+        this.database.executeUpdateQuery("INSERT INTO Consommation (stay_id, conso, price) VALUES (?, ?, ?)",
+                new Object[] {this.id, consomation_, price_});
         this.consomation.add(consomation_);
         this.price.add(price_);
     }
@@ -91,5 +122,9 @@ public class Stay {
 
     public double[] getAllPrices() {
         return this.miniBar.getPrices();
+    }
+
+    public String[] getAllPayments() {
+        return this.payment.getAllPayments();
     }
 }

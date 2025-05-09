@@ -71,6 +71,15 @@ public class ReservationManagement {
         return false;
     }
 
+    public Reservation getReservationByID(int id) {
+        for (Reservation res : reservations) {
+            if (res.getID() == id) {
+                return res;
+            }
+        }
+        return null;
+    }
+
     public Reservation[] search(String clientName) {
         if (clientName.trim().isEmpty())
             return this.getAll();

@@ -41,43 +41,42 @@ public class Database {
 
     public void initBase() {
         String createClientTable = "CREATE TABLE IF NOT EXISTS Client (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "lastName TEXT NOT NULL, " +
-                "firstName TEXT NOT NULL, " +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "lastName TEXT NOT NULL," +
+                "firstName TEXT NOT NULL," +
                 "phone TEXT NOT NULL" +
                 ");";
 
         String createRoomTable = "CREATE TABLE IF NOT EXISTS Room (" +
-            "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            "room_number INTEGER UNIQUE NOT NULL, " +
-            "etage INTEGER NOT NULL," +
-            "type TEXT NOT NULL, " +
-            "price REAL NOT NULL," +
-            "description TEXT NOT NULL," +
-            "image TEXT NOT NULL" +
-            ");";
+                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "room_number INTEGER UNIQUE NOT NULL," +
+                "etage INTEGER NOT NULL," +
+                "type TEXT NOT NULL," +
+                "price REAL NOT NULL," +
+                "description TEXT NOT NULL," +
+                "image TEXT NOT NULL" +
+                ");";
 
         String createReservationTable = "CREATE TABLE IF NOT EXISTS Reservation (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "client_id INTEGER NOT NULL, " +
-                "room_id INTEGER NOT NULL, " +
-                "start_date TEXT NOT NULL, " +
-                "end_date TEXT NOT NULL, " +
-                "FOREIGN KEY(client_id) REFERENCES Client(id), " +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "client_id INTEGER NOT NULL," +
+                "room_id INTEGER NOT NULL," +
+                "start_date TEXT NOT NULL," +
+                "end_date TEXT NOT NULL," +
+                "FOREIGN KEY(client_id) REFERENCES Client(id)," +
                 "FOREIGN KEY(room_id) REFERENCES Room(id)" +
                 ");";
 
         String createStayTable = "CREATE TABLE IF NOT EXISTS Stay (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "reservation_id INTEGER NOT NULL, " +
-                "consomation TEXT, " +
-                "price REAL, " +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "reservation_id INTEGER NOT NULL," +
+                "payment STRING," +
                 "FOREIGN KEY(reservation_id) REFERENCES Reservation(id)" +
                 ");";
-        
+
         String CreateConsommationTable = "CREATE TABLE IF NOT EXISTS Consommation (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "stay_id INTEGER NOT NULL, " +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "stay_id INTEGER NOT NULL," +
                 "conso TEXT NOT NULL," +
                 "price REAL NOT NULL," +
                 "FOREIGN KEY(stay_id) REFERENCES Stay(id)" +
@@ -88,6 +87,7 @@ public class Database {
             this.connection.createStatement().executeUpdate(createRoomTable);
             this.connection.createStatement().executeUpdate(createReservationTable);
             this.connection.createStatement().executeUpdate(createStayTable);
+            this.connection.createStatement().executeUpdate(CreateConsommationTable);
             this.connection.close();
         } catch (SQLException e) {
             System.err.println("Failed to initialize database tables: " + e.getMessage());

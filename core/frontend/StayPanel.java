@@ -98,13 +98,13 @@ class FormDialog extends JDialog {
 
     private void reloadConso() {
         mainPanel.removeAll();
-        if (stay.getConso().length == 0) {
+        if (stay.getConso(stay.getID()).length == 0) {
             JLabel empty = new JLabel(stay.getClient().getLastName() + " n'a encore rien consommé");
             empty.setForeground(Color.LIGHT_GRAY);
             mainPanel.add(empty);
         } else {
-            for (int i = 0; i < stay.getConso().length; i++) {
-                JLabel consoLabel = new JLabel(stay.getConso()[i] + " - " + stay.getPrice()[i] + "€");
+            for (int i = 0; i < stay.getConso(stay.getID()).length; i++) {
+                JLabel consoLabel = new JLabel(stay.getConso(stay.getID())[i] + " - " + stay.getPrice(stay.getID())[i] + "€");
                 consoLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
                 mainPanel.add(consoLabel);
             }
@@ -193,6 +193,7 @@ public class StayPanel extends JPanel {
         add(titleLabel, BorderLayout.NORTH);
         add(mainPanel, BorderLayout.CENTER);
         add(footerPanel, BorderLayout.SOUTH);
+        reload(mainPanel);
     }
 
     private void reload(JPanel listPanel) {

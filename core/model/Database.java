@@ -48,14 +48,14 @@ public class Database {
                 ");";
 
         String createRoomTable = "CREATE TABLE IF NOT EXISTS Room (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "room_number TEXT UNIQUE NOT NULL, " +
-                "etage INTEGER NOT NULL," +
-                "type TEXT NOT NULL, " +
-                "price REAL NOT NULL," +
-                "description TEXT NOT NULL," +
-                "image TEXT NOT NULL" +
-                ");";
+            "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            "room_number INTEGER UNIQUE NOT NULL, " +
+            "etage INTEGER NOT NULL," +
+            "type TEXT NOT NULL, " +
+            "price REAL NOT NULL," +
+            "description TEXT NOT NULL," +
+            "image TEXT NOT NULL" +
+            ");";
 
         String createReservationTable = "CREATE TABLE IF NOT EXISTS Reservation (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +

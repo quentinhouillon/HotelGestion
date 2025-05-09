@@ -1,11 +1,11 @@
 package core.backend;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 
 import core.model.Database;
 
-import java.util.ArrayList;
 
 public class RoomManagemment {
     static List<Room> rooms = new ArrayList<>();
@@ -16,28 +16,36 @@ public class RoomManagemment {
         List<Map<String, Object>> rows = database.executeReadQuery("SELECT * FROM Room");
         for (Map<String, Object> row : rows) {
             int id = (int) row.get("id");
+            int room_number = (int) row.get("room_number");
             String type = (String) row.get("type");
             double price = (double) row.get("price");
             String description = (String) row.get("description");
             int etage = (int) row.get("etage");
             String image = (String) row.get("image");
-            addRoom(type, price, id, description, etage, image);
+            rooms.add(new Room(id, room_number, type, price, description, etage, image));
         }
-        if (rooms.isEmpty()) createRoom();
+        if (rooms.size() == 0) createRoom();
 
         return rooms.toArray(Room[]::new);
     }
 
     public void addRoom(String type, double price, int roomNumber, String description, int etage, String linkImage) {
         database.executeUpdateQuery(
-            "INSERT INTO Room (room_number, etage, type, price, description) VALUES (?, ?, ?, ?, ?, ?)",
+            "INSERT INTO Room (room_number, etage, type, price, description, image) VALUES (?, ?, ?, ?, ?, ?)",
             new Object[] { roomNumber, etage, type, price, description, linkImage }
         );
-        rooms.add(new Room(roomNumber, type, price, description, etage, linkImage));
+
+        List<Map<String, Object>> rows = database.executeReadQuery("SELECT * FROM Reservation ORDER BY id DESC LIMIT 1");
+        int id = -1;
+        if (!rows.isEmpty()) {
+            id = (int) rows.get(0).get("id");
+        }
+
+        rooms.add(new Room(id, roomNumber, type, price, description, etage, linkImage));
     }
 
     public void removeRoom(Room room) {
-        database.executeUpdateQuery("DELETE FROM Room WHERE room_number = ?", new Object[] { room.getroomNumber() });
+        database.executeUpdateQuery("DELETE FROM Room WHERE room_number = ?", new Object[] { room.getRoomNumber() });
         rooms.remove(room);
     }
 
@@ -59,7 +67,16 @@ public class RoomManagemment {
 
     public Room getRoomByNumRoom(int num) {
         for (Room room : rooms) {
-            if (room.getroomNumber() == num) {
+            if (room.getRoomNumber() == num) {
+                return room;
+            }
+        }
+        return null;
+    }
+
+    public Room getRoomById(int id) {
+        for (Room room : rooms) {
+            if (room.getID() == id) {
                 return room;
             }
         }

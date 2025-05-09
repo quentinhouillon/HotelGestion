@@ -1,6 +1,7 @@
 package core.backend;
 
 public class Room {
+    int id;
     int roomNumber;
     int etage;
     String type;
@@ -8,7 +9,8 @@ public class Room {
     String description;
     String linkImage;
 
-    public Room(int num, String type, double price, String description, int etage, String linkImage) {
+    public Room(int id, int num, String type, double price, String description, int etage, String linkImage) {
+        this.id = id;
         this.roomNumber = num;
         this.type = type;
         this.price = price;
@@ -17,7 +19,7 @@ public class Room {
         this.linkImage = linkImage;
     }
     
-    public int getroomNumber() {
+    public int getRoomNumber() {
         return this.roomNumber;
     }
     
@@ -39,5 +41,9 @@ public class Room {
     
     public String getLinkImage() {
         return this.linkImage;
+    }
+
+    public int getID() {
+        return this.id;
     }
 }

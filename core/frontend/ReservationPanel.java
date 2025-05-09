@@ -231,10 +231,10 @@ class ReservationDialog extends JDialog {
         validButton.addActionListener(_ -> {
             String selectedClientName = (String) boxClient.getSelectedItem();
             String selectedRoomNumber = (String) boxRoom.getSelectedItem();
-            int roomId = Integer.parseInt(selectedRoomNumber.replaceAll("[^0-9]", ""));
+            int roomNumber = Integer.parseInt(selectedRoomNumber.replaceAll("[^0-9]", ""));
 
             Client selectedClient = clients.getByName((String) selectedClientName);
-            Room selectedRoom = rooms.getRoomByNumRoom(roomId);
+            Room selectedRoom = rooms.getRoomByNumRoom(roomNumber);
 
             reservations.add(selectedClient, selectedRoom, tabDates[0], tabDates[1]);
             dispose();
@@ -262,8 +262,8 @@ class ReservationDialog extends JDialog {
         }
 
         for (Room room : rooms.getRooms()) {
-            if (!reservations.isRoomReserved(room.getroomNumber(), this.tabDates[0], this.tabDates[1])) {
-                roomsNumber.add("Chambre n°" + room.getroomNumber());
+            if (!reservations.isRoomReserved(room.getID(), this.tabDates[0], this.tabDates[1])) {
+                roomsNumber.add("Chambre n°" + room.getRoomNumber());
             }
         }
     }
@@ -275,7 +275,7 @@ class LsPanel extends JPanel {
     public LsPanel(Reservation reservation, ActionListener deleteAction) {
         String clientName = reservation.getClient().getName();
         String clientLastName = reservation.getClient().getLastName();
-        int roomNumber = reservation.getRoom().getroomNumber();
+        int roomNumber = reservation.getRoom().getRoomNumber();
         LocalDate start = reservation.getDuration()[0];
         LocalDate end = reservation.getDuration()[1];
 
@@ -411,6 +411,7 @@ public class ReservationPanel extends JPanel {
         this.add(titleLabel, BorderLayout.NORTH);
         this.add(mainPanel, BorderLayout.CENTER);
         this.add(footerPanel, BorderLayout.SOUTH);
+        reloadLsPanel(mainPanel, reservations.getAll());
     }
 
     private void reloadLsPanel(JPanel listPanel, Reservation[] reservationTab) {

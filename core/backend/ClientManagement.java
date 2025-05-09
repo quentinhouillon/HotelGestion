@@ -58,8 +58,11 @@ public class ClientManagement {
     }
 
     public Client getClientById(int ID) {
-        if (ID >= 0 && ID < clients.size())
-            return clients.get(ID);
+        for (Client client : clients) {
+            if (client.getID() == ID) {
+                return client;
+            }
+        }
         return null;
     }
 

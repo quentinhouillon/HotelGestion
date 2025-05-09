@@ -135,7 +135,7 @@ class LsStayPanel extends JPanel {
         clientNameLabel.setFont(new Font("Arial", Font.PLAIN, 14));
         infoPanel.add(clientNameLabel);
 
-        JLabel roomNumberLabel = new JLabel("Chambre n°" + stay.getReservation().getRoom().getroomNumber());
+        JLabel roomNumberLabel = new JLabel("Chambre n°" + stay.getReservation().getRoom().getRoomNumber());
         roomNumberLabel.setForeground(Color.WHITE);
         roomNumberLabel.setFont(new Font("Arial", Font.PLAIN, 14));
         infoPanel.add(roomNumberLabel);

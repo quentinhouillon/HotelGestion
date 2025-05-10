@@ -182,13 +182,23 @@ public class HomePanel extends JPanel {
         headerPanel.add(headerLabel, BorderLayout.CENTER);
         headerPanel.add(nextButton, BorderLayout.EAST);
 
+        // Create a legend panel for day labels
+        JPanel legendPanel = new JPanel(new GridLayout(1, 7, 0, 0)); // 1 row, 7 columns, no gaps
+        String[] daysOfWeek = {"Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"};
+        for (String day : daysOfWeek) {
+            JLabel dayLabel = new JLabel(day, JLabel.CENTER);
+            dayLabel.setFont(new Font("Arial", Font.BOLD, 14)); // Smaller font
+            legendPanel.add(dayLabel);
+        }
+
         // Create the calendar grid
-        JPanel daysPanel = new JPanel(new GridLayout(6, 7, 2, 2)); // 6 rows, 7 columns
+        JPanel daysPanel = new JPanel(new GridLayout(6, 7, 0, 0)); // 6 rows, 7 columns, small gaps
         calendarPanel.add(headerPanel, BorderLayout.NORTH);
-        calendarPanel.add(daysPanel, BorderLayout.CENTER);
+        calendarPanel.add(legendPanel, BorderLayout.CENTER); // Add the legend panel
+        calendarPanel.add(daysPanel, BorderLayout.SOUTH); // Add the days panel below the legend
 
         // Populate the calendar for the current month
-        updateCalendar(calendarPanel, currentYearMonth[0], roomOccupancy);
+        updateCalendar(daysPanel, currentYearMonth[0], roomOccupancy);
 
         // Wrap the calendar in a centered panel
         JPanel wrapperPanel = new JPanel(new GridBagLayout()); // Use GridBagLayout to center the calendar
@@ -229,13 +239,23 @@ public class HomePanel extends JPanel {
         headerPanel.add(headerLabel, BorderLayout.CENTER);
         headerPanel.add(nextButton, BorderLayout.EAST);
 
+        // Create a legend panel for day labels
+        JPanel legendPanel = new JPanel(new GridLayout(1, 7)); // 1 row, 7 columns
+        String[] daysOfWeek = {"Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"};
+        for (String day : daysOfWeek) {
+            JLabel dayLabel = new JLabel(day, JLabel.CENTER);
+            dayLabel.setFont(new Font("Arial", Font.BOLD, 14)); // Smaller font
+            legendPanel.add(dayLabel);
+        }
+
         // Create the calendar grid
-        JPanel daysPanel = new JPanel(new GridLayout(6, 7, 2, 2)); // 6 rows, 7 columns
+        JPanel daysPanel = new JPanel(new GridLayout(6, 7, 0, 0)); // 6 rows, 7 columns
         calendarPanel.add(headerPanel, BorderLayout.NORTH);
-        calendarPanel.add(daysPanel, BorderLayout.CENTER);
+        calendarPanel.add(legendPanel, BorderLayout.CENTER); // Add the legend panel
+        calendarPanel.add(daysPanel, BorderLayout.SOUTH); // Add the days panel below the legend
 
         // Populate the calendar for the specified month
-        updateCalendar(calendarPanel, yearMonth, roomOccupancy);
+        updateCalendar(daysPanel, yearMonth, roomOccupancy);
 
         // Wrap the calendar in a centered panel
         JPanel wrapperPanel = new JPanel(new GridBagLayout()); // Use GridBagLayout to center the calendar
@@ -244,27 +264,18 @@ public class HomePanel extends JPanel {
         return wrapperPanel;
     }
 
-    private void updateCalendar(JPanel calendarPanel, YearMonth yearMonth, Map<LocalDate, Integer> roomOccupancy) {
-        JPanel daysPanel = (JPanel) calendarPanel.getComponent(1); // Get the days panel
+    private void updateCalendar(JPanel daysPanel, YearMonth yearMonth, Map<LocalDate, Integer> roomOccupancy) {
         daysPanel.removeAll(); // Clear the previous calendar
-
-        // Add day labels (e.g., Mon, Tue, etc.)
-        String[] daysOfWeek = {"Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"};
-        for (String day : daysOfWeek) {
-            JLabel dayLabel = new JLabel(day, JLabel.CENTER);
-            dayLabel.setFont(new Font("Arial", Font.BOLD, 14)); // Smaller font
-            daysPanel.add(dayLabel);
-        }
 
         // Calculate the first day of the month and the number of days in the month
         int firstDayOfMonth = yearMonth.atDay(1).getDayOfWeek().getValue(); // 1 = Monday, 7 = Sunday
         int daysInMonth = yearMonth.lengthOfMonth();
 
-        // Adjust for Sunday as the first day of the week
-        firstDayOfMonth = (firstDayOfMonth % 7) + 1;
+        // Adjust for Sunday as the last day of the week
+        firstDayOfMonth = (firstDayOfMonth == 7) ? 0 : firstDayOfMonth;
 
         // Fill in blank days before the first day of the month
-        for (int i = 1; i < firstDayOfMonth; i++) {
+        for (int i = 0; i < firstDayOfMonth; i++) {
             daysPanel.add(new JLabel("")); // Empty label for blank days
         }
 
@@ -294,7 +305,7 @@ public class HomePanel extends JPanel {
 
         // Fill in blank days after the last day of the month
         int totalCells = 42; // 6 rows * 7 columns
-        int filledCells = firstDayOfMonth - 1 + daysInMonth;
+        int filledCells = firstDayOfMonth + daysInMonth;
         for (int i = filledCells; i < totalCells; i++) {
             daysPanel.add(new JLabel("")); // Empty label for blank days
         }

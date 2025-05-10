@@ -8,24 +8,33 @@ import java.util.List;
 
 import core.backend.*;
 
+<<<<<<< HEAD
 class StayDialog extends JDialog {
     JPanel mainPanel;
     Stay stay;
 
     public StayDialog(Stay stay_) {
+=======
+class FormDialog extends JDialog {
+    private Stay stay;
+    private StayManagement stays;
+    private JPanel mainPanel;
+
+    public FormDialog(Stay stay_, StayManagement stays_) {
+>>>>>>> stay
         super((Frame) null, "Formulaire séjour", false);
         this.stay = stay_;
+        this.stays = stays_;
 
         setSize(700, 550);
         setResizable(false);
 
-        JLabel title = new JLabel("Séjour de Monsieur " + stay.getClient().getLastName());
+        JLabel title = new JLabel("Séjour de Mr/Mme " + stay.getClient().getLastName());
         title.setFont(new Font("Arial", Font.BOLD, 18));
         title.setHorizontalAlignment(SwingConstants.CENTER);
         title.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
         add(title, BorderLayout.NORTH);
 
-        // MAIN
         mainPanel = new JPanel();
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
@@ -35,7 +44,6 @@ class StayDialog extends JDialog {
         consomation.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
         mainPanel.add(consomation);
 
-        // FOOTER
         JPanel footerPanel = new JPanel();
         footerPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
         footerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -48,6 +56,50 @@ class StayDialog extends JDialog {
             addConsommation();
         });
         footerPanel.add(addButton);
+
+        JButton validateButton = new JButton("Valider");
+        UIConstants.createStyledButton(validateButton, UIConstants.GREEN_BUTTON_COLOR, Color.WHITE);
+        validateButton.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
+        validateButton.setPreferredSize(new Dimension(100, 40));
+        validateButton.addActionListener(_ -> {
+            JDialog confirmDialog = new JDialog(SwingUtilities.getWindowAncestor(this), "Confirmation", Dialog.ModalityType.APPLICATION_MODAL);
+            confirmDialog.setSize(300, 150);
+            confirmDialog.setLayout(new BorderLayout());
+            confirmDialog.setLocationRelativeTo(this);
+
+            JLabel confirmLabel = new JLabel("Voulez-vous valider cette commande ?");
+            confirmLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            confirmDialog.add(confirmLabel, BorderLayout.CENTER);
+
+            JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+
+            JButton yesButton = new JButton("Oui");
+            yesButton.setForeground(Color.WHITE);
+            yesButton.setBackground(UIConstants.GREEN_BUTTON_COLOR);
+            yesButton.setFocusPainted(false);
+            yesButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+            yesButton.setOpaque(true);
+
+            yesButton.addActionListener(__ -> {
+                confirmDialog.dispose();
+                dispose();
+            });
+
+            JButton noButton = new JButton("Non");
+            noButton.setForeground(Color.WHITE);
+            noButton.setBackground(UIConstants.RED_BUTTON_COLOR);
+            noButton.setFocusPainted(false);
+            noButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+            noButton.setOpaque(true);
+            noButton.addActionListener(__ -> confirmDialog.dispose());
+
+            buttonPanel.add(yesButton);
+            buttonPanel.add(noButton);
+
+            confirmDialog.add(buttonPanel, BorderLayout.SOUTH);
+            confirmDialog.setVisible(true);
+        });
+        footerPanel.add(validateButton);
 
         add(mainPanel, BorderLayout.WEST);
         add(footerPanel, BorderLayout.SOUTH);
@@ -77,6 +129,8 @@ class StayDialog extends JDialog {
         panel.add(new JLabel("choisir une boisson :"));
         panel.add(consoComboBox);
 
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 10, 10));
 
         JButton confirmButton = new JButton("Ajouter");
         UIConstants.createStyledButton(confirmButton, UIConstants.BLUE_BUTTON_COLOR, Color.WHITE);
@@ -89,26 +143,69 @@ class StayDialog extends JDialog {
                 reloadConso();
             }
         });
+        buttonPanel.add(confirmButton);
+
+        JButton cancelButton = new JButton("Annuler");
+        UIConstants.createStyledButton(cancelButton, UIConstants.RED_BUTTON_COLOR, Color.WHITE);
+        cancelButton.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        cancelButton.addActionListener(_ -> dialog.dispose());
+        buttonPanel.add(cancelButton);
 
         dialog.add(panel, BorderLayout.CENTER);
-        dialog.add(confirmButton, BorderLayout.SOUTH);
+        dialog.add(buttonPanel, BorderLayout.SOUTH);
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
     }
 
     private void reloadConso() {
         mainPanel.removeAll();
+<<<<<<< HEAD
         if (stay.getConso(stay.getID()).length == 0) {
+=======
+
+        if (stay.getConso().length == 0) {
+>>>>>>> stay
             JLabel empty = new JLabel(stay.getClient().getLastName() + " n'a encore rien consommé");
             empty.setForeground(Color.LIGHT_GRAY);
             mainPanel.add(empty);
         } else {
+<<<<<<< HEAD
             for (int i = 0; i < stay.getConso(stay.getID()).length; i++) {
                 JLabel consoLabel = new JLabel(stay.getConso(stay.getID())[i] + " - " + stay.getPrice(stay.getID())[i] + "€");
                 consoLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
                 mainPanel.add(consoLabel);
+=======
+            for (int i = 0; i < stay.getConso().length; i++) {
+                int index = i;
+
+                JPanel consoPanel = new JPanel();
+                consoPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 5));
+                consoPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+                consoPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
+
+                JButton deleteButton = new JButton("X");
+                UIConstants.createStyledButton(deleteButton, UIConstants.RED_BUTTON_COLOR, Color.WHITE);
+                deleteButton.setPreferredSize(new Dimension(40, 20));
+                deleteButton.addActionListener(_ -> {
+                    stay.removeConso(index);
+                    reloadConso();
+                });
+
+                JLabel consoLabel = new JLabel(stay.getConso()[i] + " - " + stay.getPrice()[i] + "€");
+                consoLabel.setBorder(BorderFactory.createEmptyBorder(1, 10, 1, 10));
+
+                consoPanel.add(deleteButton);
+                consoPanel.add(consoLabel);
+
+                if (i > 0) {
+                    mainPanel.add(Box.createRigidArea(new Dimension(0, 1)));
+                }
+
+                mainPanel.add(consoPanel);
+>>>>>>> stay
             }
         }
+
         mainPanel.revalidate();
         mainPanel.repaint();
     }
@@ -125,7 +222,6 @@ class LsStayPanel extends JPanel {
             BorderFactory.createEmptyBorder(10, 10, 10, 10)
         ));
 
-        // Panel pour les informations de la resercation
         JPanel infoPanel = new JPanel();
         infoPanel.setLayout(new GridLayout(3, 1));
         infoPanel.setBackground(null);
@@ -147,10 +243,58 @@ class LsStayPanel extends JPanel {
         JButton detailButton = new JButton("Détails");
         UIConstants.createStyledButton(detailButton, UIConstants.BLUE_BUTTON_COLOR, Color.white);
         detailButton.addActionListener(_ -> {
+<<<<<<< HEAD
             new StayDialog(stay);
+=======
+            new FormDialog(stay, stays);
+>>>>>>> stay
         });
-
         buttonPanel.add(detailButton);
+
+        JButton pdfButton = new JButton("PDF");
+        UIConstants.createStyledButton(pdfButton, UIConstants.ORANGE_BUTTON_COLOR, Color.WHITE);
+        pdfButton.addActionListener(_ -> {
+            JDialog confirmDialog = new JDialog(SwingUtilities.getWindowAncestor(this), "Confirmation", Dialog.ModalityType.APPLICATION_MODAL);
+            confirmDialog.setSize(300, 150);
+            confirmDialog.setLayout(new BorderLayout());
+            confirmDialog.setLocationRelativeTo(this);
+
+            JLabel confirmLabel = new JLabel("Voulez-vous générer la facture en PDF ?");
+            confirmLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            confirmDialog.add(confirmLabel, BorderLayout.CENTER);
+
+            JPanel buttonPanel1 = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+
+            JButton yesButton = new JButton("Oui");
+            yesButton.setForeground(Color.WHITE);
+            yesButton.setBackground(UIConstants.GREEN_BUTTON_COLOR);
+            yesButton.setFocusPainted(false);
+            yesButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+            yesButton.setOpaque(true);
+
+            yesButton.addActionListener(__ -> {
+                String filePath = "Facture_" + stay.getClient().getLastName() + ".pdf";
+                stays.generatePDF(stay, filePath);
+                confirmDialog.dispose();
+            });
+
+            JButton noButton = new JButton("Non");
+            noButton.setForeground(Color.WHITE);
+            noButton.setBackground(UIConstants.RED_BUTTON_COLOR);
+            noButton.setFocusPainted(false);
+            noButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+            noButton.setOpaque(true);
+            noButton.addActionListener(__ -> confirmDialog.dispose());
+
+            buttonPanel1.add(yesButton);
+            buttonPanel1.add(noButton);
+
+            confirmDialog.add(buttonPanel1, BorderLayout.SOUTH);
+            confirmDialog.setVisible(true);
+        });
+        buttonPanel.add(pdfButton);
+
+        buttonPanel.add(pdfButton);
         add(buttonPanel, BorderLayout.EAST);
         add(infoPanel, BorderLayout.WEST);
     }
@@ -163,20 +307,17 @@ public class StayPanel extends JPanel {
     public StayPanel() {
         setLayout(new BorderLayout());
 
-        // TITRE
         JLabel titleLabel = new JLabel("Liste des séjours en cours");
-        titleLabel.setForeground(Color.WHITE); 
+        titleLabel.setForeground(Color.WHITE);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         titleLabel.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
         add(titleLabel, BorderLayout.NORTH);
 
-        // MAIN PANEL
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // FOOTER
         JButton addButton = new JButton("Actualiser");
         UIConstants.createStyledButton(addButton, UIConstants.PURPLE_BUTTON_COLOR, Color.WHITE);
         addButton.setPreferredSize(new Dimension(100, 40));

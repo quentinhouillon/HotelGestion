@@ -85,11 +85,33 @@ public class Stay {
         }
     }
 
+    public void removeConso(int index) {
+        if (index >= 0 && index < consomation.size()) { 
+            consomation.remove(index); 
+            price.remove(index); 
+        }
+    }
+
     public String[] getAllBoissons() {
         return this.miniBar.getBoissons();
     }
 
     public double[] getAllPrices() {
         return this.miniBar.getPrices();
+    }
+
+    public double getTotalPrice() {
+        double roomPricePerNight = getReservation().getRoom().getPrice();
+        long nights = java.time.temporal.ChronoUnit.DAYS.between(
+            getReservation().getDuration()[0],
+            getReservation().getDuration()[1]
+        );
+        double totalRoomPrice = roomPricePerNight * nights;
+
+        double total = totalRoomPrice;
+        for (int i = 0; i < getConso().length; i++) {
+            total += getPrice()[i];
+        }
+        return total;
     }
 }

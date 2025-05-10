@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import core.model.Database;
+import core.model.*;
 
 public class StayManagement {
     List<Stay> stays = new ArrayList<>();

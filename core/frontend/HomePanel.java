@@ -210,57 +210,8 @@ public class HomePanel extends JPanel {
         return wrapperPanel;
     }
 
-    private JPanel createStaticCalendarPanel(Map<LocalDate, Integer> roomOccupancy, YearMonth yearMonth) {
-        // Create the main panel for the calendar
-        JPanel calendarPanel = new JPanel();
-        calendarPanel.setLayout(new BorderLayout());
-        calendarPanel.setPreferredSize(new Dimension(400, 300)); // Set a fixed size for the calendar
 
-        // Create a header panel with navigation buttons and the month label
-        JPanel headerPanel = new JPanel(new BorderLayout());
-        JButton prevButton = new JButton("<");
-        UIConstants.createStyledButton(prevButton, UIConstants.BLUE_BUTTON_COLOR, Color.WHITE);
-        JButton nextButton = new JButton(">");
-        UIConstants.createStyledButton(nextButton, UIConstants.BLUE_BUTTON_COLOR, Color.WHITE);
-        JLabel headerLabel = new JLabel("", JLabel.CENTER);
-        headerLabel.setFont(new Font("Arial", Font.BOLD, 18)); // Font for the month label
-
-        // Update the header label with the current month and year
-        Runnable updateHeader = () -> headerLabel.setText(yearMonth.getMonth().getDisplayName(java.time.format.TextStyle.FULL, java.util.Locale.FRENCH) + " " + yearMonth.getYear());
-        updateHeader.run();
-
-        // Add action listeners to the navigation buttons
-        prevButton.addActionListener(e -> {
-            YearMonth newMonth = yearMonth.minusMonths(1);
-            refreshCalendar(newMonth); // Refresh the calendar with the previous month
-        });
-
-        nextButton.addActionListener(e -> {
-            YearMonth newMonth = yearMonth.plusMonths(1);
-            refreshCalendar(newMonth); // Refresh the calendar with the next month
-        });
-
-        headerPanel.add(prevButton, BorderLayout.WEST);
-        headerPanel.add(headerLabel, BorderLayout.CENTER);
-        headerPanel.add(nextButton, BorderLayout.EAST);
-
-        // Create the calendar grid
-        JPanel daysPanel = new JPanel(new GridLayout(6, 7, 2, 2)); // 6 rows, 7 columns
-        calendarPanel.add(headerPanel, BorderLayout.NORTH);
-        calendarPanel.add(daysPanel, BorderLayout.CENTER);
-
-        // Populate the calendar for the specified month
-        updateCalendar(calendarPanel, yearMonth, roomOccupancy);
-
-        // Wrap the calendar in a centered panel
-        JPanel wrapperPanel = new JPanel(new GridBagLayout()); // Use GridBagLayout to center the calendar
-        wrapperPanel.add(calendarPanel);
-
-        return wrapperPanel;
-    }
-
-    private void updateCalendar(JPanel calendarPanel, YearMonth yearMonth, Map<LocalDate, Integer> roomOccupancy) {
-        JPanel daysPanel = (JPanel) calendarPanel.getComponent(1); // Get the days panel
+    private void updateCalendar(JPanel daysPanel, YearMonth yearMonth, Map<LocalDate, Integer> roomOccupancy) {
         daysPanel.removeAll(); // Clear the previous calendar
     
         // Calculate the first day of the month and the number of days in the month
@@ -379,7 +330,9 @@ public class HomePanel extends JPanel {
         // Create a header panel with navigation buttons and the month label
         JPanel headerPanel = new JPanel(new BorderLayout());
         JButton prevButton = new JButton("<");
+        UIConstants.createStyledButton(prevButton, UIConstants.BLUE_BUTTON_COLOR, Color.WHITE);
         JButton nextButton = new JButton(">");
+        UIConstants.createStyledButton(nextButton, UIConstants.BLUE_BUTTON_COLOR, Color.WHITE);
         JLabel headerLabel = new JLabel("", JLabel.CENTER);
         headerLabel.setFont(new Font("Arial", Font.BOLD, 18)); // Font for the month label
 

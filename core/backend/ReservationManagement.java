@@ -1,6 +1,6 @@
 package core.backend;
 
-import core.model.Database;
+import core.model.*;
 
 import java.sql.Date;
 import java.time.LocalDate;

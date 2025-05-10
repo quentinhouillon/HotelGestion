@@ -8,11 +8,11 @@ import java.util.List;
 
 import core.backend.*;
 
-class FormDialog extends JDialog {
+class StayDialog extends JDialog {
     JPanel mainPanel;
     Stay stay;
 
-    public FormDialog(Stay stay_) {
+    public StayDialog(Stay stay_) {
         super((Frame) null, "Formulaire séjour", false);
         this.stay = stay_;
 
@@ -147,7 +147,7 @@ class LsStayPanel extends JPanel {
         JButton detailButton = new JButton("Détails");
         UIConstants.createStyledButton(detailButton, UIConstants.BLUE_BUTTON_COLOR, Color.white);
         detailButton.addActionListener(_ -> {
-            new FormDialog(stay);
+            new StayDialog(stay);
         });
 
         buttonPanel.add(detailButton);

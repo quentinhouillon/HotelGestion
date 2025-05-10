@@ -159,7 +159,9 @@ public class HomePanel extends JPanel {
         // Create a header panel with navigation buttons and the month label
         JPanel headerPanel = new JPanel(new BorderLayout());
         JButton prevButton = new JButton("<");
+        UIConstants.createStyledButton(prevButton, UIConstants.BLUE_BUTTON_COLOR, Color.WHITE);
         JButton nextButton = new JButton(">");
+        UIConstants.createStyledButton(nextButton, UIConstants.BLUE_BUTTON_COLOR, Color.WHITE);
         JLabel headerLabel = new JLabel("", JLabel.CENTER);
         headerLabel.setFont(new Font("Arial", Font.BOLD, 18)); // Font for the month label
 
@@ -206,7 +208,9 @@ public class HomePanel extends JPanel {
         // Create a header panel with navigation buttons and the month label
         JPanel headerPanel = new JPanel(new BorderLayout());
         JButton prevButton = new JButton("<");
+        UIConstants.createStyledButton(prevButton, UIConstants.BLUE_BUTTON_COLOR, Color.WHITE);
         JButton nextButton = new JButton(">");
+        UIConstants.createStyledButton(nextButton, UIConstants.BLUE_BUTTON_COLOR, Color.WHITE);
         JLabel headerLabel = new JLabel("", JLabel.CENTER);
         headerLabel.setFont(new Font("Arial", Font.BOLD, 18)); // Font for the month label
 
@@ -339,6 +343,7 @@ public class HomePanel extends JPanel {
 
         // Refresh button
         JButton refreshButton = new JButton("Refresh Calendar");
+        UIConstants.createStyledButton(refreshButton, UIConstants.BLUE_BUTTON_COLOR, Color.WHITE);
         refreshButton.addActionListener(e -> refreshCalendar()); // Call refreshCalendar() when clicked
 
         // Add all legend panels and the button to the main legend panel

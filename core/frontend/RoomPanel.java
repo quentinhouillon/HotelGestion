@@ -102,15 +102,8 @@ class CardPanel extends JPanel {
         priceLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 10, 5));
         add(priceLabel);
         
-        // JLabel descriptionLabel = new JLabel(this.description);
-        // descriptionLabel.setBorder(BorderFactory.createEmptyBorder(10, 5, 20, 5));
-        // add(descriptionLabel, BorderLayout.CENTER);
-        
         JButton dialogButton = new JButton("Voir détails");
-        dialogButton.setBackground(primaryColor);
-        dialogButton.setFocusPainted(false);
-        dialogButton.setBorderPainted(false);
-        dialogButton.setOpaque(true);
+        UIConstants.createStyledButton(dialogButton, UIConstants.BLUE_BUTTON_COLOR, Color.WHITE);
 
 
         dialogButton.addActionListener(_ -> {
@@ -198,9 +191,30 @@ public class RoomPanel extends JPanel {
     public RoomPanel(Color cardColor, Color primary) {
         this.cardColor = cardColor;
         this.primaryColor = primary;
+        setLayout(new BorderLayout());
 
-        setLayout(new WrapLayout(FlowLayout.LEFT, 10, 10));
-        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        JPanel titlePanel = new JPanel();
+        titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.Y_AXIS));
+        titlePanel.setBackground(null);
+        titlePanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        JLabel titleLabel = new JLabel("Liste des Chambres");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        titlePanel.add(titleLabel, BorderLayout.CENTER);
+        
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new WrapLayout(FlowLayout.LEFT, 10, 10));
+        mainPanel.setBackground(null);
+
+        JScrollPane scrollPane = new JScrollPane(mainPanel);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.getViewport().setBackground(UIConstants.MAIN_COLOR);
+        scrollPane.setBorder(null);
+
+        add(titlePanel, BorderLayout.NORTH);
+        add(scrollPane, BorderLayout.CENTER);
 
         for (Room room : this.rooms.getRooms()) {
             ImageIcon roomImage = new ImageIcon(room.getLinkImage());
@@ -213,7 +227,7 @@ public class RoomPanel extends JPanel {
                 cardColor,
                 primaryColor
             );
-            add(card);
+            mainPanel.add(card);
         }
     }
 }

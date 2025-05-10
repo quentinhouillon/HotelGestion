@@ -95,7 +95,7 @@ public class Main extends JFrame {
         roomButton.setIcon(new ImageIcon(scaledRoomImage));
         roomButton.addActionListener(_ -> {
             main.removeAll();
-            main.add(scrollableRoomPanel);
+            main.add(roomPanel);
             main.revalidate();
             main.repaint();
         });

@@ -82,13 +82,6 @@ public class HomePanel extends JPanel {
         return createStaticCalendarPanel(roomOccupancy);
     }
 
-    private JPanel createDynamicCalendarPanel(YearMonth yearMonth) {
-        // Calculate room occupancy dynamically
-        Map<LocalDate, Integer> roomOccupancy = calculateRoomOccupancy(yearMonth);
-
-        // Create the calendar panel using the dynamic data
-        return createStaticCalendarPanel(roomOccupancy, yearMonth);
-    }
 
     private Map<LocalDate, Integer> calculateRoomOccupancy() {
         Map<LocalDate, Integer> roomOccupancy = new HashMap<>();
@@ -184,13 +177,31 @@ public class HomePanel extends JPanel {
         headerPanel.add(headerLabel, BorderLayout.CENTER);
         headerPanel.add(nextButton, BorderLayout.EAST);
 
+        // Create a legend panel for day labels
+        JPanel legendPanel = new JPanel(new GridLayout(1, 7, 0, 0)); // 1 row, 7 columns, no gaps
+        String[] daysOfWeek = {"Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"};
+        for (String day : daysOfWeek) {
+            JLabel dayLabel = new JLabel(day, JLabel.CENTER);
+            dayLabel.setFont(new Font("Arial", Font.BOLD, 14)); // Smaller font
+            legendPanel.add(dayLabel);
+        }
+
         // Create the calendar grid
-        JPanel daysPanel = new JPanel(new GridLayout(6, 7, 2, 2)); // 6 rows, 7 columns
+        JPanel daysPanel = new JPanel(new GridLayout(6, 7, 0, 0)); // 6 rows, 7 columns, no gaps
+        daysPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0)); // Remove any padding
+
+        // Combine the legend and days panels into a single panel
+        JPanel combinedPanel = new JPanel();
+        combinedPanel.setLayout(new BoxLayout(combinedPanel, BoxLayout.Y_AXIS));
+        combinedPanel.add(legendPanel);
+        combinedPanel.add(daysPanel);
+
+        // Add the header and combined panels to the calendar panel
         calendarPanel.add(headerPanel, BorderLayout.NORTH);
-        calendarPanel.add(daysPanel, BorderLayout.CENTER);
+        calendarPanel.add(combinedPanel, BorderLayout.CENTER);
 
         // Populate the calendar for the current month
-        updateCalendar(calendarPanel, currentYearMonth[0], roomOccupancy);
+        updateCalendar(daysPanel, currentYearMonth[0], roomOccupancy);
 
         // Wrap the calendar in a centered panel
         JPanel wrapperPanel = new JPanel(new GridBagLayout()); // Use GridBagLayout to center the calendar
@@ -251,33 +262,25 @@ public class HomePanel extends JPanel {
     private void updateCalendar(JPanel calendarPanel, YearMonth yearMonth, Map<LocalDate, Integer> roomOccupancy) {
         JPanel daysPanel = (JPanel) calendarPanel.getComponent(1); // Get the days panel
         daysPanel.removeAll(); // Clear the previous calendar
-
-        // Add day labels (e.g., Mon, Tue, etc.)
-        String[] daysOfWeek = {"Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"};
-        for (String day : daysOfWeek) {
-            JLabel dayLabel = new JLabel(day, JLabel.CENTER);
-            dayLabel.setFont(new Font("Arial", Font.BOLD, 14)); // Smaller font
-            daysPanel.add(dayLabel);
-        }
-
+    
         // Calculate the first day of the month and the number of days in the month
         int firstDayOfMonth = yearMonth.atDay(1).getDayOfWeek().getValue(); // 1 = Monday, 7 = Sunday
         int daysInMonth = yearMonth.lengthOfMonth();
-
-        // Adjust for Sunday as the first day of the week
-        firstDayOfMonth = (firstDayOfMonth % 7) + 1;
-
+    
+        // Adjust for Sunday as the last day of the week
+        firstDayOfMonth = (firstDayOfMonth == 7) ? 0 : firstDayOfMonth;
+    
         // Fill in blank days before the first day of the month
-        for (int i = 1; i < firstDayOfMonth; i++) {
+        for (int i = 0; i < firstDayOfMonth; i++) {
             daysPanel.add(new JLabel("")); // Empty label for blank days
         }
-
+    
         // Fill in the days of the month
         for (int day = 1; day <= daysInMonth; day++) {
             LocalDate date = yearMonth.atDay(day);
             JLabel dayLabel = new JLabel(String.valueOf(day), JLabel.CENTER);
             dayLabel.setFont(new Font("Arial", Font.PLAIN, 14)); // Regular font
-
+    
             // Highlight the date based on room occupancy
             if (roomOccupancy.containsKey(date)) {
                 int roomsOccupied = roomOccupancy.get(date);
@@ -289,20 +292,20 @@ public class HomePanel extends JPanel {
                     dayLabel.setForeground(Color.GREEN); // Low occupancy
                 }
             }
-
+    
             // Wrap the label in a panel to avoid layout constraints
             JPanel dayWrapper = new JPanel(new BorderLayout());
             dayWrapper.add(dayLabel, BorderLayout.CENTER);
             daysPanel.add(dayWrapper);
         }
-
+    
         // Fill in blank days after the last day of the month
         int totalCells = 42; // 6 rows * 7 columns
-        int filledCells = firstDayOfMonth - 1 + daysInMonth;
+        int filledCells = firstDayOfMonth + daysInMonth;
         for (int i = filledCells; i < totalCells; i++) {
             daysPanel.add(new JLabel("")); // Empty label for blank days
         }
-
+    
         daysPanel.revalidate();
         daysPanel.repaint();
     }
@@ -369,9 +372,64 @@ public class HomePanel extends JPanel {
     public void refreshCalendar(YearMonth yearMonth) {
         // Remove the old calendar panel
         leftPanel.removeAll();
-        // Add the new calendar panel with the specified month
-        JPanel newCalendarPanel = createDynamicCalendarPanel(yearMonth);
-        leftPanel.add(newCalendarPanel, BorderLayout.CENTER);
+
+        // Create a new calendar panel with the specified month
+        JPanel calendarPanel = new JPanel(new BorderLayout());
+
+        // Create a header panel with navigation buttons and the month label
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        JButton prevButton = new JButton("<");
+        JButton nextButton = new JButton(">");
+        JLabel headerLabel = new JLabel("", JLabel.CENTER);
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 18)); // Font for the month label
+
+        // Update the header label with the current month and year
+        headerLabel.setText(yearMonth.getMonth().getDisplayName(java.time.format.TextStyle.FULL, java.util.Locale.FRENCH) + " " + yearMonth.getYear());
+
+        // Add action listeners to the navigation buttons
+        prevButton.addActionListener(e -> {
+            YearMonth newMonth = yearMonth.minusMonths(1);
+            refreshCalendar(newMonth); // Refresh the calendar with the previous month
+        });
+
+        nextButton.addActionListener(e -> {
+            YearMonth newMonth = yearMonth.plusMonths(1);
+            refreshCalendar(newMonth); // Refresh the calendar with the next month
+        });
+
+        headerPanel.add(prevButton, BorderLayout.WEST);
+        headerPanel.add(headerLabel, BorderLayout.CENTER);
+        headerPanel.add(nextButton, BorderLayout.EAST);
+
+        // Create a legend panel for day labels
+        JPanel legendPanel = new JPanel(new GridLayout(1, 7, 0, 0)); // 1 row, 7 columns, no gaps
+        String[] daysOfWeek = {"Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"};
+        for (String day : daysOfWeek) {
+            JLabel dayLabel = new JLabel(day, JLabel.CENTER);
+            dayLabel.setFont(new Font("Arial", Font.BOLD, 14)); // Smaller font
+            legendPanel.add(dayLabel);
+        }
+
+        // Create the calendar grid
+        JPanel daysPanel = new JPanel(new GridLayout(6, 7, 0, 0)); // 6 rows, 7 columns, no gaps
+        daysPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0)); // Remove any padding
+
+        // Combine the legend and days panels into a single panel
+        JPanel combinedPanel = new JPanel();
+        combinedPanel.setLayout(new BoxLayout(combinedPanel, BoxLayout.Y_AXIS));
+        combinedPanel.add(legendPanel);
+        combinedPanel.add(daysPanel);
+
+        // Add the header and combined panels to the calendar panel
+        calendarPanel.add(headerPanel, BorderLayout.NORTH);
+        calendarPanel.add(combinedPanel, BorderLayout.CENTER);
+
+        // Populate the calendar for the specified month
+        updateCalendar(daysPanel, yearMonth, calculateRoomOccupancy(yearMonth));
+
+        // Add the new calendar panel to the left panel
+        leftPanel.add(calendarPanel, BorderLayout.CENTER);
+
         // Revalidate and repaint the panel to apply changes
         leftPanel.revalidate();
         leftPanel.repaint();

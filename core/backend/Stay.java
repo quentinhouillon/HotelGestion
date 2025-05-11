@@ -36,14 +36,14 @@ class Payment {
 }
 
 public class Stay {
-    int id;
-    Reservation reservation;
-    Payment payment;
-    List<String> consomation;
-    List<Double> price;
-    Database database;
-    static MiniBar miniBar;
-    static Payment payments;
+    private int id;
+    private Reservation reservation;
+    private Payment payment;
+    private List<String> consomation;
+    private List<Double> price;
+    private Database database;
+    private static MiniBar miniBar;
+    private static Payment payments;
 
     public Stay(int id, Reservation reservation) {
         this.id = id;
@@ -51,7 +51,7 @@ public class Stay {
         this.consomation = new ArrayList<>();
         this.price = new ArrayList<>();
         this.database = new Database();
-        miniBar = new MiniBar();
+        this.miniBar = new MiniBar();
     }
 
     public Client getClient() {
@@ -74,28 +74,28 @@ public class Stay {
         this.payment = payment_;
     }
 
-    public String[] getConso(int stayID_) {
+    public String[] getConso() {
         this.consomation.clear();
         List<Map<String, Object>> rows = database.executeReadQuery(("SELECT * FROM Consommation"));
         for (Map<String, Object> row : rows) {
             int stayID = (int) row.get("stay_id");
             String conso = (String) row.get("conso");
 
-            if (stayID == stayID_) {
+            if (stayID == this.id) {
                 this.consomation.add(conso);
             }
         }
         return this.consomation.toArray(new String[0]);
     }
 
-    public double[] getPrice(int stayID_) {
+    public double[] getPrice() {
         this.price.clear();
         List<Map<String, Object>> rows = database.executeReadQuery(("SELECT * FROM Consommation"));
         for (Map<String, Object> row : rows) {
             int stayID = (int) row.get("stay_id");
             Double price_ = (Double) row.get("price");
 
-            if (stayID == stayID_) {
+            if (stayID == this.id) {
                 this.price.add(price_);
             }
         }
@@ -109,17 +109,12 @@ public class Stay {
         this.price.add(price_);
     }
 
-    public void delete(int ID) {
-        if (ID >= 0 && ID < this.consomation.size()) {
-            this.consomation.remove(ID);
-            this.price.remove(ID);
-        }
-    }
-
     public void removeConso(int index) {
+        this.database.executeUpdateQuery("DELETE FROM Consommation WHERE stay_id = ? AND conso = ? AND price = ?",
+            new Object[] {this.id, this.consomation.get(index), this.price.get(index)});
         if (index >= 0 && index < consomation.size()) { 
-            consomation.remove(index); 
-            price.remove(index); 
+            this.consomation.remove(index); 
+            this.price.remove(index); 
         }
     }
 

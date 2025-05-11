@@ -14,6 +14,10 @@ public class ReservationManagement {
     private ClientManagement clients = new ClientManagement();
     private RoomManagemment rooms = new RoomManagemment();
 
+    public ReservationManagement() {
+        this.getAll();
+    }
+
     public Reservation[] getAll() {
         reservations.clear();
         List<Map<String, Object>> rows = database.executeReadQuery(("SELECT * FROM Reservation"));
@@ -33,7 +37,7 @@ public class ReservationManagement {
         return reservations.toArray(Reservation[]::new);
     }
 
-    public void add(Client client, Room room, LocalDate start, LocalDate end) {
+    public Reservation add(Client client, Room room, LocalDate start, LocalDate end) {
         database.executeUpdateQuery(
                 "INSERT INTO Reservation (client_id, room_id, start_date, end_date) VALUES (?, ?, ?, ?)",
                 new Object[] { client.getID(), room.getID(), start, end });
@@ -44,7 +48,10 @@ public class ReservationManagement {
         if (!rows.isEmpty()) {
             id = (int) rows.get(0).get("id");
         }
-        reservations.add(new Reservation(id, client, room, start, end));
+
+        Reservation newReservation = new Reservation(id, client, room, start, end);
+        reservations.add(newReservation);
+        return newReservation;
     }
 
     public void remove(Reservation res) {
@@ -63,19 +70,17 @@ public class ReservationManagement {
         return false;
     }
 
-    public boolean contains(Reservation reservation_) {
+    public boolean contains(Reservation reservation) {
         for (Reservation res : reservations) {
-            if (reservation_ == res)
+            if (res.equals(reservation))
                 return true;
         }
         return false;
     }
 
     public Reservation getReservationByID(int id) {
-        for (Reservation res : reservations) {
-            if (res.getID() == id) {
-                return res;
-            }
+        for (Reservation res : getAll()) {
+            if (res.getID() == id) return res;
         }
         return null;
     }

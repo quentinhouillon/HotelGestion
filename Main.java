@@ -28,7 +28,6 @@ public class Main extends JFrame {
         ClientPanel clientPanel = new ClientPanel(accentColor);
         RoomPanel roomPanel = new RoomPanel(accentColor, primaryColor);
         ReservationPanel reservationPanel = new ReservationPanel();
-        StayPanel stayPanel = new StayPanel();
 
         // Make the main panel scrollable
         JScrollPane scrollableClientPanel = new JScrollPane(clientPanel);
@@ -66,9 +65,6 @@ public class Main extends JFrame {
 
         ImageIcon reservationIcon = new ImageIcon("./icons/reservation.png");
         Image scaledReservationImage = reservationIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-
-        ImageIcon stayIcon = new ImageIcon("./icons/stay.png");
-        Image scaledStayImage = stayIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
 
         // SIDEBAR BUTTON
         JButton homeButton = new JButton("Accueil");
@@ -111,18 +107,8 @@ public class Main extends JFrame {
         });
         sidebar.add(reservationButton);
 
-        JButton stayButton = new JButton("Séjours");
-        stayButton.setIcon(new ImageIcon(scaledStayImage));
-        stayButton.addActionListener(_ -> {
-            main.removeAll();
-            main.add(stayPanel);
-            main.revalidate();
-            main.repaint();
-        });
-        sidebar.add(stayButton);
-
         // Add buttons to an array
-        JButton[] buttons = {roomButton, homeButton, reservationButton, stayButton, clientButton};
+        JButton[] buttons = {roomButton, homeButton, reservationButton, clientButton};
         configButton(buttons);
 
 

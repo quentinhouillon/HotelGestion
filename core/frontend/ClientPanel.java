@@ -198,10 +198,13 @@ public class ClientPanel extends JPanel {
         JPanel listContainer = new JPanel();
         listContainer.setLayout(new BoxLayout(listContainer, BoxLayout.Y_AXIS));
         listContainer.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        reloadClientList(listContainer);
 
-        // Ajouter le conteneur directement au panneau principal
-        add(listContainer, BorderLayout.CENTER);
+        JScrollPane scrollPane = new JScrollPane(listContainer);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.getViewport().setBackground(UIConstants.MAIN_COLOR);
+        scrollPane.setBorder(null);
+
 
         // Ajouter un footer panel avec un bouton "Ajouter"
         JPanel footerPanel = new JPanel(new BorderLayout());
@@ -376,15 +379,17 @@ public class ClientPanel extends JPanel {
         });
 
         footerPanel.add(addButton, BorderLayout.EAST);
-        add(footerPanel, BorderLayout.SOUTH);
+
+        this.add(scrollPane, BorderLayout.CENTER);
+        this.add(footerPanel, BorderLayout.SOUTH);
+        reloadClientList(listContainer);
     }
 
     private void reloadClientList(JPanel listContainer) {
         listContainer.removeAll();
 
         for (Client client : clients.getAll()) {
-            final ListPanel[] clientRowWrapper = new ListPanel[1];
-            clientRowWrapper[0] = new ListPanel(client, _ -> {
+            ListPanel newClient = new ListPanel(client, _ -> {
                 // JDialog de suppression
                 JDialog confirmDialog = new JDialog(SwingUtilities.getWindowAncestor(this), "Confirmation",
                         Dialog.ModalityType.APPLICATION_MODAL);
@@ -404,8 +409,6 @@ public class ClientPanel extends JPanel {
 
                 yesButton.addActionListener(_ -> {
                     clients.removeClient(client);
-                    listContainer.remove(clientRowWrapper[0]);
-                    listContainer.revalidate();
                     reloadClientList(listContainer);
                     confirmDialog.dispose();
                 });
@@ -421,14 +424,11 @@ public class ClientPanel extends JPanel {
                 confirmDialog.add(buttonPanel, BorderLayout.SOUTH);
                 confirmDialog.setVisible(true);
             }, listColor);
-            ListPanel clientRow = clientRowWrapper[0];
 
             // Définir une taille fixe pour chaque case client
-            clientRow.setPreferredSize(new Dimension(listContainer.getWidth(), 100));
-            clientRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
-            clientRow.setMinimumSize(new Dimension(0, 100));
-            listContainer.add(clientRow);
+            newClient.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
             listContainer.add(Box.createRigidArea(new Dimension(0, 10)));
+            listContainer.add(newClient);
         }
 
         listContainer.revalidate();

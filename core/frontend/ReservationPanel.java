@@ -53,8 +53,8 @@ class CalendarDialog extends JDialog {
         validateButton = new JButton("Valider la séléction");
         UIConstants.createStyledButton(validateButton, UIConstants.BLUE_BUTTON_COLOR.darker(), Color.WHITE);
         UIConstants.applyButtonEffects(validateButton, UIConstants.BLUE_BUTTON_COLOR.darker(),
-                                       UIConstants.BLUE_BUTTON_COLOR.darker(),
-                                       UIConstants.BLUE_BUTTON_COLOR.darker());
+                UIConstants.BLUE_BUTTON_COLOR.darker(),
+                UIConstants.BLUE_BUTTON_COLOR.darker());
 
         JPanel footerPanel = new JPanel();
         footerPanel.add(validateButton);
@@ -70,9 +70,11 @@ class CalendarDialog extends JDialog {
     private void updateCalendar() {
         mainPanel.removeAll();
         dateButtons.clear();
-        monthLabel.setText(currentMonth.getMonth().getDisplayName(java.time.format.TextStyle.FULL, java.util.Locale.FRENCH) + " " + currentMonth.getYear());
+        monthLabel.setText(
+                currentMonth.getMonth().getDisplayName(java.time.format.TextStyle.FULL, java.util.Locale.FRENCH) + " "
+                        + currentMonth.getYear());
 
-        String[] daysOfWeek = {"Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"};
+        String[] daysOfWeek = { "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim" };
         for (String day : daysOfWeek) {
             mainPanel.add(new JLabel(day, SwingConstants.CENTER));
         }
@@ -99,8 +101,8 @@ class CalendarDialog extends JDialog {
             if (isDateInRange(date)) {
                 dayButton.setBackground(UIConstants.BLUE_BUTTON_COLOR.darker().darker());
                 UIConstants.applyButtonEffects(dayButton, UIConstants.BLUE_BUTTON_COLOR.darker().darker(),
-                                                UIConstants.BLUE_BUTTON_COLOR.darker().darker(),
-                                                UIConstants.BLUE_BUTTON_COLOR.darker().darker());
+                        UIConstants.BLUE_BUTTON_COLOR.darker().darker(),
+                        UIConstants.BLUE_BUTTON_COLOR.darker().darker());
             }
         }
 
@@ -118,16 +120,16 @@ class CalendarDialog extends JDialog {
             secondSelectedDate = date;
             UIConstants.createStyledButton(button, UIConstants.BLUE_BUTTON_COLOR, getForeground());
             UIConstants.applyButtonEffects(validateButton, UIConstants.BLUE_BUTTON_COLOR,
-                                           UIConstants.BLUE_BUTTON_COLOR.darker(),
-                                           UIConstants.BLUE_BUTTON_COLOR.darker().darker());
+                    UIConstants.BLUE_BUTTON_COLOR.darker(),
+                    UIConstants.BLUE_BUTTON_COLOR.darker().darker());
             validateButton.addActionListener(_ -> validateSelection());
             highlightDateRange();
         } else {
             // Reset selection if both dates are already selected
             UIConstants.createStyledButton(button, UIConstants.BLUE_BUTTON_COLOR.darker(), getForeground());
             UIConstants.applyButtonEffects(validateButton, UIConstants.BLUE_BUTTON_COLOR.darker(),
-                                           UIConstants.BLUE_BUTTON_COLOR.darker(),
-                                           UIConstants.BLUE_BUTTON_COLOR.darker());
+                    UIConstants.BLUE_BUTTON_COLOR.darker(),
+                    UIConstants.BLUE_BUTTON_COLOR.darker());
             validateButton.removeActionListener(validateButton.getActionListeners()[0]);
             resetSelection();
             firstSelectedDate = date;
@@ -145,8 +147,8 @@ class CalendarDialog extends JDialog {
                 if ((buttonDate.isEqual(start) || buttonDate.isAfter(start)) && buttonDate.isBefore(end.plusDays(1))) {
                     button.setBackground(UIConstants.BLUE_BUTTON_COLOR.darker().darker());
                     UIConstants.applyButtonEffects(button, UIConstants.BLUE_BUTTON_COLOR.darker().darker(),
-                                                   UIConstants.BLUE_BUTTON_COLOR.darker().darker(),
-                                                   UIConstants.BLUE_BUTTON_COLOR.darker().darker());
+                            UIConstants.BLUE_BUTTON_COLOR.darker().darker(),
+                            UIConstants.BLUE_BUTTON_COLOR.darker().darker());
                 }
             }
         }
@@ -190,6 +192,7 @@ class ReservationDialog extends JDialog {
     ClientManagement clients = new ClientManagement();
     RoomManagemment rooms = new RoomManagemment();
     ReservationManagement reservations = new ReservationManagement();
+    StayManagement stays = new StayManagement();
     LocalDate[] tabDates;
     List<String> clientsName = new ArrayList<>();
     List<String> roomsNumber = new ArrayList<>();
@@ -233,10 +236,11 @@ class ReservationDialog extends JDialog {
             String selectedRoomNumber = (String) boxRoom.getSelectedItem();
             int roomNumber = Integer.parseInt(selectedRoomNumber.replaceAll("[^0-9]", ""));
 
-            Client selectedClient = clients.getByName((String) selectedClientName);
+            Client selectedClient = clients.getByName(selectedClientName);
             Room selectedRoom = rooms.getRoomByNumRoom(roomNumber);
 
-            reservations.add(selectedClient, selectedRoom, tabDates[0], tabDates[1]);
+            Reservation newReservation = reservations.add(selectedClient, selectedRoom, tabDates[0], tabDates[1]);
+            stays.add(newReservation);
             dispose();
         });
 
@@ -270,21 +274,23 @@ class ReservationDialog extends JDialog {
 }
 
 class LsPanel extends JPanel {
-    ReservationManagement reservations = new ReservationManagement();
+    private Reservation reservation;
+    private ReservationManagement reservations = new ReservationManagement();
+    private StayManagement stays = new StayManagement();
 
     public LsPanel(Reservation reservation, ActionListener deleteAction) {
-        String clientName = reservation.getClient().getName();
-        String clientLastName = reservation.getClient().getLastName();
-        int roomNumber = reservation.getRoom().getRoomNumber();
-        LocalDate start = reservation.getDuration()[0];
-        LocalDate end = reservation.getDuration()[1];
+        this.reservation = reservation;
+        String clientName = this.reservation.getClient().getName();
+        String clientLastName = this.reservation.getClient().getLastName();
+        int roomNumber = this.reservation.getRoom().getRoomNumber();
+        LocalDate start = this.reservation.getDuration()[0];
+        LocalDate end = this.reservation.getDuration()[1];
 
         setLayout(new BorderLayout());
         setBackground(UIConstants.ACCENT_COLOR);
         setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(43, 43, 43), 1),
-            BorderFactory.createEmptyBorder(10, 10, 10, 10)
-        ));
+                BorderFactory.createLineBorder(new Color(43, 43, 43), 1),
+                BorderFactory.createEmptyBorder(10, 10, 10, 10)));
 
         // Panel pour les informations de la resercation
         JPanel infoPanel = new JPanel();
@@ -308,12 +314,27 @@ class LsPanel extends JPanel {
         infoPanel.add(durationLabel);
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
-        buttonPanel.setLayout(new GridLayout(1, 1, 0, 10));
+        buttonPanel.setLayout(new GridLayout(2, 1, 0, 10));
+        buttonPanel.setBackground(null);
 
         JButton deleteButton = new JButton("Annuler la reservation");
         UIConstants.createStyledButton(deleteButton, UIConstants.RED_BUTTON_COLOR, Color.white);
         deleteButton.addActionListener(deleteAction);
 
+        JButton stayButton = new JButton("Voir le séjour");
+
+        if (stays.stayStarted(this.reservation)) {
+            UIConstants.createStyledButton(stayButton, UIConstants.BLUE_BUTTON_COLOR, Color.WHITE);
+            stayButton.addActionListener(_ -> {
+                new StayDialog(stays.getStayByResercation(this.reservation));
+            });
+        } else {
+            UIConstants.createStyledButton(stayButton, UIConstants.BLUE_BUTTON_COLOR.darker(), Color.WHITE);
+            UIConstants.applyButtonEffects(stayButton, stayButton.getBackground(), stayButton.getBackground(),
+                    stayButton.getBackground());
+        }
+
+        buttonPanel.add(stayButton);
         buttonPanel.add(deleteButton);
         add(buttonPanel, BorderLayout.EAST);
         add(infoPanel, BorderLayout.WEST);
@@ -322,6 +343,7 @@ class LsPanel extends JPanel {
 
 public class ReservationPanel extends JPanel {
     ReservationManagement reservations = new ReservationManagement();
+    StayManagement stays = new StayManagement();
 
     public ReservationPanel() {
         this.setLayout(new BorderLayout());
@@ -337,6 +359,12 @@ public class ReservationPanel extends JPanel {
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
+        JScrollPane scrollPane = new JScrollPane(mainPanel);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.getViewport().setBackground(UIConstants.MAIN_COLOR);
+        scrollPane.setBorder(null);
+
         // FOOTER
         JPanel searchPanel = new JPanel();
         searchPanel.setBackground(null);
@@ -346,16 +374,14 @@ public class ReservationPanel extends JPanel {
         searchField.setMinimumSize(new Dimension(200, 40));
         searchField.setMaximumSize(new Dimension(200, 40));
         searchField.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(Color.GRAY, 1),
-            BorderFactory.createEmptyBorder(5, 5, 5, 5)
-        ));
+                BorderFactory.createLineBorder(Color.GRAY, 1),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)));
         searchField.setBackground(UIConstants.ACCENT_COLOR);
         searchField.setForeground(Color.WHITE);
         searchField.setCaretColor(Color.WHITE);
         searchField.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(UIConstants.ACCENT_COLOR),
-            BorderFactory.createEmptyBorder(0, 10, 0, 0)
-        ));
+                BorderFactory.createLineBorder(UIConstants.ACCENT_COLOR),
+                BorderFactory.createEmptyBorder(0, 10, 0, 0)));
 
         JButton searchButton = new JButton("Rechercher");
         UIConstants.createStyledButton(searchButton, UIConstants.BLUE_BUTTON_COLOR, Color.WHITE);
@@ -372,10 +398,9 @@ public class ReservationPanel extends JPanel {
                     int roomNumber = Integer.parseInt(query);
                     reloadLsPanel(mainPanel, reservations.search(roomNumber));
 
-                    
                 } catch (Exception e2) {
                     // Fallback to string search (client name)
-                    reloadLsPanel(mainPanel,  reservations.search(query));
+                    reloadLsPanel(mainPanel, reservations.search(query));
                 }
             }
 
@@ -409,7 +434,7 @@ public class ReservationPanel extends JPanel {
         footerPanel.add(searchPanel, BorderLayout.WEST);
 
         this.add(titleLabel, BorderLayout.NORTH);
-        this.add(mainPanel, BorderLayout.CENTER);
+        this.add(scrollPane, BorderLayout.CENTER);
         this.add(footerPanel, BorderLayout.SOUTH);
         reloadLsPanel(mainPanel, reservations.getAll());
     }
@@ -418,13 +443,15 @@ public class ReservationPanel extends JPanel {
         listPanel.removeAll();
         for (Reservation reservation : reservationTab) {
             LsPanel lsPanel = new LsPanel(reservation, _ -> {
-                JDialog confirmDialog = new JDialog(SwingUtilities.getWindowAncestor(this), "Confirmation", Dialog.ModalityType.APPLICATION_MODAL);
+                JDialog confirmDialog = new JDialog(SwingUtilities.getWindowAncestor(this), "Confirmation",
+                        Dialog.ModalityType.APPLICATION_MODAL);
                 confirmDialog.setSize(550, 150);
                 confirmDialog.setResizable(false);
                 confirmDialog.setLayout(new BorderLayout());
                 confirmDialog.setLocationRelativeTo(this);
 
-                JLabel confirmLabel = new JLabel("Êtes-vous sûr de vouloir annuler la reservation ? Ceci supprimera le séjour associé");
+                JLabel confirmLabel = new JLabel(
+                        "Êtes-vous sûr de vouloir annuler la reservation ? Ceci supprimera le séjour associé");
                 confirmLabel.setHorizontalAlignment(SwingConstants.CENTER);
                 confirmDialog.add(confirmLabel, BorderLayout.CENTER);
 
@@ -435,6 +462,7 @@ public class ReservationPanel extends JPanel {
                 yesButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
                 yesButton.addActionListener(_ -> {
+                    stays.remove(stays.getStayByResercation(reservation));
                     reservations.remove(reservation);
                     reloadLsPanel(listPanel, reservations.getAll());
                     confirmDialog.dispose();

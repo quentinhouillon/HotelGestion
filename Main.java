@@ -1,6 +1,7 @@
-import core.frontend.*;
 import java.awt.*;
 import javax.swing.*;
+
+import src.view.*;
 
 public class Main extends JFrame {
     public Main() {
@@ -30,8 +31,8 @@ public class Main extends JFrame {
         UIManager.put("Label.foreground", Color.WHITE);
 
         setTitle("Hotel Continental");
-        setPreferredSize(new Dimension(1050, 800));
-        setMinimumSize(new Dimension(1000, 750));
+        setPreferredSize(new Dimension(1000, 800));
+        setMinimumSize(new Dimension(1000, 800));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pack();
 
@@ -123,7 +124,7 @@ public class Main extends JFrame {
         sidebar.add(reservationButton, BorderLayout.WEST);
 
         // Add buttons to an array
-        JButton[] buttons = {roomButton, homeButton, reservationButton, clientButton};
+        JButton[] buttons = {homeButton, clientButton, roomButton, reservationButton};
         configButton(buttons);
 
 
@@ -172,6 +173,9 @@ public class Main extends JFrame {
                 button.setOpaque(true);
             });
         }
+
+        buttons[0].setBackground(getBackground());
+        buttons[0].setOpaque(true);
     }
 
     public static void main(String[] args) {

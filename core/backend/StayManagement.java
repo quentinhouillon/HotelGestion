@@ -66,6 +66,7 @@ public class StayManagement {
     }
 
     public void remove(Stay stay) {
+        database.executeUpdateQuery("DELETE FROM Consommation WHERE Stay_id = ?", new Object[] { stay.getID() });
         database.executeUpdateQuery("DELETE FROM Stay WHERE id = ?", new Object[] { stay.getID() });
         stays.remove(stay);
     }
@@ -149,7 +150,7 @@ public class StayManagement {
                     stay.getReservation().getDuration()[1]);
             double totalRoomPrice = roomPricePerNight * nights;
 
-            PdfPCell roomCell = new PdfPCell(new Phrase("Chambre n°" + stay.getReservation().getRoom().getID() + " ("
+            PdfPCell roomCell = new PdfPCell(new Phrase("Chambre n°" + stay.getReservation().getRoom().getRoomNumber() + " ("
                     + roomPricePerNight + " € x " + nights + " nuit(s))", cellFont));
             roomCell.setPadding(8);
             table.addCell(roomCell);

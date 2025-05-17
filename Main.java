@@ -1,4 +1,3 @@
-import core.backend.ReservationManagement;
 import core.frontend.*;
 import java.awt.*;
 import javax.swing.*;
@@ -9,7 +8,20 @@ public class Main extends JFrame {
         Color mainColor = new Color(0x2e3440);
         Color accentColor = new Color(0x3b4252);
         Color primaryColor = new Color(0x5e81ac);
+        String iconPath = "./icons/icon.png";
+        ImageIcon icon = new ImageIcon(iconPath);
 
+        if (Taskbar.isTaskbarSupported()) {
+            try {
+                Taskbar taskbar = Taskbar.getTaskbar();
+                Image image = Toolkit.getDefaultToolkit().getImage(iconPath);
+                taskbar.setIconImage(image);
+            } catch (UnsupportedOperationException | SecurityException e) {
+                e.printStackTrace();
+            }
+        }
+
+        setIconImage(icon.getImage());
         setBackground(mainColor);
         UIManager.put("Panel.background", mainColor);
         UIManager.put("Button.background", primaryColor);
@@ -18,15 +30,14 @@ public class Main extends JFrame {
         UIManager.put("Label.foreground", Color.WHITE);
 
         setTitle("Hotel Continental");
-        setPreferredSize(new Dimension(850, 750));
-        setMinimumSize(new Dimension(750, 700));
+        setPreferredSize(new Dimension(1050, 800));
+        setMinimumSize(new Dimension(1000, 750));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pack();
 
-        ReservationManagement reservationManagement = new ReservationManagement();
-        HomePanel homePanel = new HomePanel(reservationManagement);
-        ClientPanel clientPanel = new ClientPanel(accentColor);
-        RoomPanel roomPanel = new RoomPanel(accentColor, primaryColor);
+        HomePanel homePanel = new HomePanel();
+        ClientPanel clientPanel = new ClientPanel();
+        RoomPanel roomPanel = new RoomPanel();
         ReservationPanel reservationPanel = new ReservationPanel();
 
         // Make the main panel scrollable
@@ -75,18 +86,20 @@ public class Main extends JFrame {
                 main.revalidate();
                 main.repaint();
         });
+        homeButton.setHorizontalAlignment(SwingConstants.LEFT);
         sidebar.add(homeButton);
-
+        
         JButton clientButton = new JButton("Clients");
         clientButton.setIcon(new ImageIcon(scaledClientImage));
         clientButton.addActionListener(_ -> {
-                main.removeAll();
-                main.add(clientPanel);
-                main.revalidate();
-                main.repaint();
+            main.removeAll();
+            main.add(clientPanel);
+            main.revalidate();
+            main.repaint();
         });
-        sidebar.add(clientButton);
-
+        clientButton.setHorizontalAlignment(SwingConstants.LEFT);
+        sidebar.add(clientButton, BorderLayout.WEST);
+        
         JButton roomButton = new JButton("Chambres");
         roomButton.setIcon(new ImageIcon(scaledRoomImage));
         roomButton.addActionListener(_ -> {
@@ -95,8 +108,9 @@ public class Main extends JFrame {
             main.revalidate();
             main.repaint();
         });
-        sidebar.add(roomButton);
-
+        roomButton.setHorizontalAlignment(SwingConstants.LEFT);
+        sidebar.add(roomButton, BorderLayout.WEST);
+        
         JButton reservationButton = new JButton("Réservations");
         reservationButton.setIcon(new ImageIcon(scaledReservationImage));
         reservationButton.addActionListener(_ -> {
@@ -105,7 +119,8 @@ public class Main extends JFrame {
             main.revalidate();
             main.repaint();
         });
-        sidebar.add(reservationButton);
+        reservationButton.setHorizontalAlignment(SwingConstants.LEFT);
+        sidebar.add(reservationButton, BorderLayout.WEST);
 
         // Add buttons to an array
         JButton[] buttons = {roomButton, homeButton, reservationButton, clientButton};
@@ -150,7 +165,6 @@ public class Main extends JFrame {
                 for (JButton b : buttons) {
                     if (!b.equals(button)) {
                         b.setBackground(null);
-                        // button.setForeground(Color.BLACK);
                         b.setOpaque(false);
                     }
                 }

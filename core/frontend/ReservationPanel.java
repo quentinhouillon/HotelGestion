@@ -317,13 +317,14 @@ class LsPanel extends JPanel {
         buttonPanel.setLayout(new GridLayout(2, 1, 0, 10));
         buttonPanel.setBackground(null);
 
-        JButton deleteButton = new JButton("Annuler la reservation");
+        JButton deleteButton = new JButton("Annuler");
         UIConstants.createStyledButton(deleteButton, UIConstants.RED_BUTTON_COLOR, Color.white);
         deleteButton.addActionListener(deleteAction);
 
         JButton stayButton = new JButton("Voir le séjour");
 
         if (stays.stayStarted(this.reservation)) {
+            deleteButton.setText("Supprimer");
             UIConstants.createStyledButton(stayButton, UIConstants.BLUE_BUTTON_COLOR, Color.WHITE);
             stayButton.addActionListener(_ -> {
                 new StayDialog(stays.getStayByResercation(this.reservation));
@@ -348,10 +349,10 @@ public class ReservationPanel extends JPanel {
     public ReservationPanel() {
         this.setLayout(new BorderLayout());
 
-        JLabel titleLabel = new JLabel("Liste des réservations en cours");
+        JLabel titleLabel = new JLabel("Liste des réservations");
         titleLabel.setForeground(Color.WHITE);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        titleLabel.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         // MAIN
@@ -441,48 +442,55 @@ public class ReservationPanel extends JPanel {
 
     private void reloadLsPanel(JPanel listPanel, Reservation[] reservationTab) {
         listPanel.removeAll();
-        for (Reservation reservation : reservationTab) {
-            LsPanel lsPanel = new LsPanel(reservation, _ -> {
-                JDialog confirmDialog = new JDialog(SwingUtilities.getWindowAncestor(this), "Confirmation",
-                        Dialog.ModalityType.APPLICATION_MODAL);
-                confirmDialog.setSize(550, 150);
-                confirmDialog.setResizable(false);
-                confirmDialog.setLayout(new BorderLayout());
-                confirmDialog.setLocationRelativeTo(this);
-
-                JLabel confirmLabel = new JLabel(
-                        "Êtes-vous sûr de vouloir annuler la reservation ? Ceci supprimera le séjour associé");
-                confirmLabel.setHorizontalAlignment(SwingConstants.CENTER);
-                confirmDialog.add(confirmLabel, BorderLayout.CENTER);
-
-                JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
-
-                JButton yesButton = new JButton("Oui");
-                UIConstants.createStyledButton(yesButton, UIConstants.GREEN_BUTTON_COLOR, Color.WHITE);
-                yesButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-
-                yesButton.addActionListener(_ -> {
-                    stays.remove(stays.getStayByResercation(reservation));
-                    reservations.remove(reservation);
-                    reloadLsPanel(listPanel, reservations.getAll());
-                    confirmDialog.dispose();
+        if (reservationTab.length == 0) {
+            JLabel emptyLabel = new JLabel("Aucune réservation n'a été ajouée !");
+            emptyLabel.setForeground(Color.LIGHT_GRAY);
+            listPanel.add(emptyLabel);
+        } else {
+            for (Reservation reservation : reservationTab) {
+                LsPanel lsPanel = new LsPanel(reservation, _ -> {
+                    JDialog confirmDialog = new JDialog(SwingUtilities.getWindowAncestor(this), "Confirmation",
+                            Dialog.ModalityType.APPLICATION_MODAL);
+                    confirmDialog.setSize(550, 150);
+                    confirmDialog.setResizable(false);
+                    confirmDialog.setLayout(new BorderLayout());
+                    confirmDialog.setLocationRelativeTo(this);
+    
+                    JLabel confirmLabel = new JLabel(
+                            "Êtes-vous sûr de vouloir annuler la reservation ? Ceci supprimera le séjour associé.");
+                    confirmLabel.setHorizontalAlignment(SwingConstants.CENTER);
+                    confirmDialog.add(confirmLabel, BorderLayout.CENTER);
+    
+                    JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+    
+                    JButton yesButton = new JButton("Oui");
+                    UIConstants.createStyledButton(yesButton, UIConstants.GREEN_BUTTON_COLOR, Color.WHITE);
+                    yesButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+    
+                    yesButton.addActionListener(_ -> {
+                        stays.remove(stays.getStayByResercation(reservation));
+                        reservations.remove(reservation);
+                        reloadLsPanel(listPanel, reservations.getAll());
+                        confirmDialog.dispose();
+                    });
+    
+                    JButton noButton = new JButton("Non");
+                    UIConstants.createStyledButton(noButton, UIConstants.RED_BUTTON_COLOR, Color.WHITE);
+                    noButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+                    noButton.addActionListener(_ -> confirmDialog.dispose());
+    
+                    buttonPanel.add(yesButton);
+                    buttonPanel.add(noButton);
+    
+                    confirmDialog.add(buttonPanel, BorderLayout.SOUTH);
+                    confirmDialog.setVisible(true);
                 });
+    
+                lsPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
+                listPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+                listPanel.add(lsPanel, BorderLayout.NORTH);
+            }
 
-                JButton noButton = new JButton("Non");
-                UIConstants.createStyledButton(noButton, UIConstants.RED_BUTTON_COLOR, Color.WHITE);
-                noButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-                noButton.addActionListener(_ -> confirmDialog.dispose());
-
-                buttonPanel.add(yesButton);
-                buttonPanel.add(noButton);
-
-                confirmDialog.add(buttonPanel, BorderLayout.SOUTH);
-                confirmDialog.setVisible(true);
-            });
-
-            lsPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
-            listPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-            listPanel.add(lsPanel, BorderLayout.NORTH);
         }
         listPanel.revalidate();
         listPanel.repaint();

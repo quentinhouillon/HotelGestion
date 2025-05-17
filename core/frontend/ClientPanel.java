@@ -9,18 +9,16 @@ import core.backend.*;
 
 class ClientDialog extends JDialog {
     ClientManagement clients = new ClientManagement();
-    Color mainColor;
+    Color mainColor = UIConstants.ACCENT_COLOR;
 
-    public ClientDialog(Color mainColor) {
+    public ClientDialog() {
         super((Frame) null, "Ajouter un client", true);
-        this.mainColor = mainColor;
 
         initDialog(-1, null);
     }
 
-    public ClientDialog(Color mainColor, Client client, JLabel firstName, JLabel lastName, JLabel phone) {
+    public ClientDialog(Client client, JLabel firstName, JLabel lastName, JLabel phone) {
         super((Frame) null, "Modification", true);
-        this.mainColor = mainColor;
 
         initDialog(client.getID(), client);
         lastName.setText("Nom : " + client.getLastName());
@@ -123,7 +121,7 @@ class ListPanel extends JPanel {
         String phone = client.getPhone();
 
         setLayout(new BorderLayout());
-        setBackground(mainColor);
+        setBackground(UIConstants.ACCENT_COLOR);
         setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(43, 43, 43), 1),
                 BorderFactory.createEmptyBorder(10, 10, 10, 10)));
@@ -131,7 +129,7 @@ class ListPanel extends JPanel {
         // Panel pour les informations du client
         JPanel infoPanel = new JPanel();
         infoPanel.setLayout(new GridLayout(3, 1));
-        infoPanel.setBackground(mainColor); // Panel de couleur
+        infoPanel.setBackground(null); // Panel de couleur
         infoPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
 
         JLabel nameLabel = new JLabel("Nom : " + lastName);
@@ -156,7 +154,7 @@ class ListPanel extends JPanel {
 
         // Panel pour contenir les boutons "Modifier" et "Supprimer"
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
-        buttonPanel.setBackground(mainColor);
+        buttonPanel.setBackground(null);
         buttonPanel.setLayout(new GridLayout(2, 1, 0, 10)); // Deux lignes, espacement vertical de 10
 
         // Bouton pour modifier le client
@@ -166,7 +164,7 @@ class ListPanel extends JPanel {
 
         // Ajouter une action pour le bouton "Modifier"
         modifyButton.addActionListener(_ -> {
-            new ClientDialog(mainColor, client, firstNameLabel, nameLabel, phoneLabel);
+            new ClientDialog(client, firstNameLabel, nameLabel, phoneLabel);
         });
 
         // Ajout des boutons au panel
@@ -181,9 +179,10 @@ class ListPanel extends JPanel {
 public class ClientPanel extends JPanel {
     Color listColor;
     ClientManagement clients = new ClientManagement();
+    ReservationManagement reservations = new ReservationManagement();
 
-    public ClientPanel(Color accentColor) {
-        this.listColor = accentColor;
+    public ClientPanel() {
+        this.listColor = UIConstants.ACCENT_COLOR;
         setLayout(new BorderLayout());
 
         // Titre
@@ -205,7 +204,6 @@ public class ClientPanel extends JPanel {
         scrollPane.getViewport().setBackground(UIConstants.MAIN_COLOR);
         scrollPane.setBorder(null);
 
-
         // Ajouter un footer panel avec un bouton "Ajouter"
         JPanel footerPanel = new JPanel(new BorderLayout());
         footerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -225,7 +223,7 @@ public class ClientPanel extends JPanel {
                 BorderFactory.createLineBorder(Color.GRAY, 1),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)));
         searchField.setBackground(listColor);
-        searchField.setForeground(Color.WHITE); 
+        searchField.setForeground(Color.WHITE);
         searchField.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(listColor),
                 BorderFactory.createEmptyBorder(0, 10, 0, 0)));
@@ -270,7 +268,7 @@ public class ClientPanel extends JPanel {
                 }, listColor);
 
                 // Appliquer les dimensions dynamiques comme dans reloadClientList
-                clientRow.setPreferredSize(new Dimension(listContainer.getWidth(), 100)); 
+                clientRow.setPreferredSize(new Dimension(listContainer.getWidth(), 100));
                 clientRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
                 clientRow.setMinimumSize(new Dimension(0, 100));
 
@@ -374,7 +372,7 @@ public class ClientPanel extends JPanel {
 
         // Action pour le bouton "Ajouter"
         addButton.addActionListener(_ -> {
-            new ClientDialog(accentColor);
+            new ClientDialog();
             reloadClientList(listContainer);
         });
 
@@ -388,50 +386,67 @@ public class ClientPanel extends JPanel {
     private void reloadClientList(JPanel listContainer) {
         listContainer.removeAll();
 
-        for (Client client : clients.getAll()) {
-            ListPanel newClient = new ListPanel(client, _ -> {
-                // JDialog de suppression
-                JDialog confirmDialog = new JDialog(SwingUtilities.getWindowAncestor(this), "Confirmation",
-                        Dialog.ModalityType.APPLICATION_MODAL);
-                confirmDialog.setSize(300, 150);
-                confirmDialog.setLayout(new BorderLayout());
-                confirmDialog.setLocationRelativeTo(this);
+        if (clients.getAll().length == 0) {
+            JLabel emptyLabel = new JLabel("Aucun client n'a été ajouté !");
+            emptyLabel.setForeground(Color.LIGHT_GRAY);
+            listContainer.add(emptyLabel);
+        } else {
+            for (Client client : clients.getAll()) {
+                ListPanel newClient = new ListPanel(client, _ -> {
+                    // JDialog de suppression
+                    JDialog confirmDialog = new JDialog(SwingUtilities.getWindowAncestor(this), "Confirmation",
+                            Dialog.ModalityType.APPLICATION_MODAL);
+                    confirmDialog.setSize(300, 150);
+                    confirmDialog.setLayout(new BorderLayout());
+                    confirmDialog.setLocationRelativeTo(this);
 
-                JLabel confirmLabel = new JLabel("Êtes-vous sûr de vouloir supprimer ce client ?");
-                confirmLabel.setHorizontalAlignment(SwingConstants.CENTER);
-                confirmDialog.add(confirmLabel, BorderLayout.CENTER);
+                    JLabel confirmLabel = new JLabel("Êtes-vous sûr de vouloir supprimer ce client ?");
+                    confirmLabel.setHorizontalAlignment(SwingConstants.CENTER);
+                    confirmDialog.add(confirmLabel, BorderLayout.CENTER);
 
-                JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+                    JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
 
-                JButton yesButton = new JButton("Oui");
-                UIConstants.createStyledButton(yesButton, UIConstants.GREEN_BUTTON_COLOR, Color.WHITE);
-                yesButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+                    JButton yesButton = new JButton("Oui");
+                    UIConstants.createStyledButton(yesButton, UIConstants.GREEN_BUTTON_COLOR, Color.WHITE);
+                    yesButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
-                yesButton.addActionListener(_ -> {
-                    clients.removeClient(client);
-                    reloadClientList(listContainer);
-                    confirmDialog.dispose();
-                });
+                    yesButton.addActionListener(_ -> {
+                        clients.removeClient(client);
+                        reloadClientList(listContainer);
+                        confirmDialog.dispose();
+                    });
 
-                JButton noButton = new JButton("Non");
-                UIConstants.createStyledButton(noButton, UIConstants.RED_BUTTON_COLOR, Color.WHITE);
-                noButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-                noButton.addActionListener(_ -> confirmDialog.dispose());
+                    JButton noButton = new JButton("Non");
+                    UIConstants.createStyledButton(noButton, UIConstants.RED_BUTTON_COLOR, Color.WHITE);
+                    noButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+                    noButton.addActionListener(_ -> confirmDialog.dispose());
 
-                buttonPanel.add(yesButton);
-                buttonPanel.add(noButton);
+                    if (!containClient(client, confirmLabel, noButton))
+                        buttonPanel.add(yesButton);
+                    buttonPanel.add(noButton);
 
-                confirmDialog.add(buttonPanel, BorderLayout.SOUTH);
-                confirmDialog.setVisible(true);
-            }, listColor);
+                    confirmDialog.add(buttonPanel, BorderLayout.SOUTH);
+                    confirmDialog.setVisible(true);
+                }, listColor);
 
-            // Définir une taille fixe pour chaque case client
-            newClient.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
-            listContainer.add(Box.createRigidArea(new Dimension(0, 10)));
-            listContainer.add(newClient);
+                // Définir une taille fixe pour chaque case client
+                newClient.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
+                listContainer.add(Box.createRigidArea(new Dimension(0, 10)));
+                listContainer.add(newClient);
+            }
         }
-
         listContainer.revalidate();
         listContainer.repaint();
+    }
+
+    public boolean containClient(Client client, JLabel confirmLabel, JButton noButton) {
+        for (Reservation reservation : reservations.getAll()) {
+            if (reservation.getClient().getID() == client.getID()) {
+                confirmLabel.setText("Vous ne pouvez pas supprimer un client dont la réservation est en cours");
+                noButton.setText("Fermer");
+                return true;
+            }
+        }
+        return false;
     }
 }

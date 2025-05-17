@@ -1,7 +1,6 @@
 package core.frontend;
 
-import core.backend.Reservation;
-import core.backend.ReservationManagement;
+import core.backend.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.time.LocalDate;
@@ -12,11 +11,11 @@ import java.util.Map;
 import javax.swing.*;
 
 public class HomePanel extends JPanel {
-    private final ReservationManagement reservationManagement;
+    private ReservationManagement reservationManagement = new ReservationManagement();
+    private RoomManagemment rooms = new RoomManagemment();
     private JPanel leftPanel; // Store a reference to the left panel
 
-    public HomePanel(ReservationManagement reservationManagement) {
-        this.reservationManagement = reservationManagement;
+    public HomePanel() {
         setLayout(new BorderLayout());
 
         // Top panel with a dynamically resizing image
@@ -141,7 +140,7 @@ public class HomePanel extends JPanel {
 
     private JPanel createStaticCalendarPanel(Map<LocalDate, Integer> roomOccupancy) {
         // Create the main panel for the calendar
-        JPanel calendarPanel = new JPanel();
+        JPanel calendarPanel = new JPanel(new BorderLayout());
         calendarPanel.setLayout(new BorderLayout());
         calendarPanel.setPreferredSize(new Dimension(400, 300)); // Set a fixed size for the calendar
 
@@ -179,7 +178,7 @@ public class HomePanel extends JPanel {
 
         // Create a legend panel for day labels
         JPanel legendPanel = new JPanel(new GridLayout(1, 7, 0, 0)); // 1 row, 7 columns, no gaps
-        String[] daysOfWeek = {"Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"};
+        String[] daysOfWeek = {"Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"};
         for (String day : daysOfWeek) {
             JLabel dayLabel = new JLabel(day, JLabel.CENTER);
             dayLabel.setFont(new Font("Arial", Font.BOLD, 14)); // Smaller font
@@ -235,9 +234,10 @@ public class HomePanel extends JPanel {
             // Highlight the date based on room occupancy
             if (roomOccupancy.containsKey(date)) {
                 int roomsOccupied = roomOccupancy.get(date);
-                if (roomsOccupied > 2) {
+                int full = rooms.getRooms().length;
+                if (roomsOccupied == full) {
                     dayLabel.setForeground(Color.RED); // High occupancy
-                } else if (roomsOccupied > 1) {
+                } else if (roomsOccupied >= full/2) {
                     dayLabel.setForeground(Color.ORANGE); // Medium occupancy
                 } else {
                     dayLabel.setForeground(Color.GREEN); // Low occupancy
@@ -271,7 +271,7 @@ public class HomePanel extends JPanel {
         lowColorLabel.setOpaque(true);
         lowColorLabel.setBackground(Color.GREEN);
         lowColorLabel.setPreferredSize(new Dimension(20, 20));
-        JLabel lowTextLabel = new JLabel("Low Occupancy");
+        JLabel lowTextLabel = new JLabel("Peu de monde");
         lowOccupancyPanel.add(lowColorLabel);
         lowOccupancyPanel.add(lowTextLabel);
 
@@ -281,7 +281,7 @@ public class HomePanel extends JPanel {
         mediumColorLabel.setOpaque(true);
         mediumColorLabel.setBackground(Color.ORANGE);
         mediumColorLabel.setPreferredSize(new Dimension(20, 20));
-        JLabel mediumTextLabel = new JLabel("Medium Occupancy");
+        JLabel mediumTextLabel = new JLabel("beaucoup de monde");
         mediumOccupancyPanel.add(mediumColorLabel);
         mediumOccupancyPanel.add(mediumTextLabel);
 
@@ -291,12 +291,12 @@ public class HomePanel extends JPanel {
         highColorLabel.setOpaque(true);
         highColorLabel.setBackground(Color.RED);
         highColorLabel.setPreferredSize(new Dimension(20, 20));
-        JLabel highTextLabel = new JLabel("High Occupancy");
+        JLabel highTextLabel = new JLabel("Complet");
         highOccupancyPanel.add(highColorLabel);
         highOccupancyPanel.add(highTextLabel);
 
         // Refresh button
-        JButton refreshButton = new JButton("Refresh Calendar");
+        JButton refreshButton = new JButton("Actualiser");
         UIConstants.createStyledButton(refreshButton, UIConstants.BLUE_BUTTON_COLOR, Color.WHITE);
         refreshButton.addActionListener(e -> refreshCalendar()); // Call refreshCalendar() when clicked
 
@@ -356,7 +356,7 @@ public class HomePanel extends JPanel {
 
         // Create a legend panel for day labels
         JPanel legendPanel = new JPanel(new GridLayout(1, 7, 0, 0)); // 1 row, 7 columns, no gaps
-        String[] daysOfWeek = {"Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"};
+        String[] daysOfWeek = {"Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"};
         for (String day : daysOfWeek) {
             JLabel dayLabel = new JLabel(day, JLabel.CENTER);
             dayLabel.setFont(new Font("Arial", Font.BOLD, 14)); // Smaller font

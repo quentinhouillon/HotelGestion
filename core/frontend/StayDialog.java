@@ -46,7 +46,7 @@ public class StayDialog extends JDialog {
         addButton.addActionListener(_ -> {
             this.addConsommation();
         });
-        
+
         JButton pdfButton = new JButton("PDF");
         pdfButton.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
         pdfButton.setPreferredSize(new Dimension(100, 40));
@@ -54,7 +54,7 @@ public class StayDialog extends JDialog {
         pdfButton.addActionListener(_ -> {
             this.generatePDF();
         });
-        
+
         footerPanel.add(addButton);
         footerPanel.add(pdfButton);
         add(mainPanel, BorderLayout.WEST);
@@ -67,7 +67,7 @@ public class StayDialog extends JDialog {
     private void addConsommation() {
         List<String> allConsommations = new ArrayList<>();
         for (int i = 0; i < stay.getAllBoissons().length; i++) {
-            allConsommations.add(stay.getAllBoissons()[i] + " - " + stay.getAllPrices()[i] + "€");
+            allConsommations.add(stay.getAllBoissons()[i] + " - " + stay.getAllPrices()[i] + " €");
         }
 
         JDialog dialog = new JDialog((Frame) null, "Ajouter une consommation", false);
@@ -137,7 +137,7 @@ public class StayDialog extends JDialog {
                     reloadConso();
                 });
 
-                JLabel consoLabel = new JLabel(stay.getConso()[i] + " - " + stay.getPrice()[i] + "€");
+                JLabel consoLabel = new JLabel(stay.getConso()[i] + " - " + stay.getPrice()[i] + " €");
                 consoLabel.setBorder(BorderFactory.createEmptyBorder(1, 10, 1, 10));
 
                 consoPanel.add(deleteButton);
@@ -155,43 +155,7 @@ public class StayDialog extends JDialog {
     }
 
     private void generatePDF() {
-        JDialog confirmDialog = new JDialog(SwingUtilities.getWindowAncestor(this), "Confirmation",
-                Dialog.ModalityType.APPLICATION_MODAL);
-        confirmDialog.setSize(300, 150);
-        confirmDialog.setLayout(new BorderLayout());
-        confirmDialog.setLocationRelativeTo(this);
-
-        JLabel confirmLabel = new JLabel("Voulez-vous générer la facture en PDF ?");
-        confirmLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        confirmDialog.add(confirmLabel, BorderLayout.CENTER);
-
-        JPanel buttonPanel1 = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
-
-        JButton yesButton = new JButton("Oui");
-        yesButton.setForeground(Color.WHITE);
-        yesButton.setBackground(UIConstants.GREEN_BUTTON_COLOR);
-        yesButton.setFocusPainted(false);
-        yesButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-        yesButton.setOpaque(true);
-
-        yesButton.addActionListener(__ -> {
-            String filePath = "./factures/Facture_" + stay.getClient().getLastName() + ".pdf";
-            stays.generatePDF(stay, filePath);
-            confirmDialog.dispose();
-        });
-
-        JButton noButton = new JButton("Non");
-        noButton.setForeground(Color.WHITE);
-        noButton.setBackground(UIConstants.RED_BUTTON_COLOR);
-        noButton.setFocusPainted(false);
-        noButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-        noButton.setOpaque(true);
-        noButton.addActionListener(__ -> confirmDialog.dispose());
-
-        buttonPanel1.add(yesButton);
-        buttonPanel1.add(noButton);
-
-        confirmDialog.add(buttonPanel1, BorderLayout.SOUTH);
-        confirmDialog.setVisible(true);
+        String filePath = "./factures/Facture_" + stay.getClient().getLastName() + ".pdf";
+        stays.generatePDF(stay, filePath);
     }
 }

@@ -47,16 +47,6 @@ public class Database {
                 "phone TEXT NOT NULL" +
                 ");";
 
-        String createRoomTable = "CREATE TABLE IF NOT EXISTS Room (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "room_number INTEGER UNIQUE NOT NULL," +
-                "etage INTEGER NOT NULL," +
-                "type TEXT NOT NULL," +
-                "price REAL NOT NULL," +
-                "description TEXT NOT NULL," +
-                "image TEXT NOT NULL" +
-                ");";
-
         String createReservationTable = "CREATE TABLE IF NOT EXISTS Reservation (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "client_id INTEGER NOT NULL," +
@@ -84,7 +74,6 @@ public class Database {
 
         try {
             this.connection.createStatement().executeUpdate(createClientTable);
-            this.connection.createStatement().executeUpdate(createRoomTable);
             this.connection.createStatement().executeUpdate(createReservationTable);
             this.connection.createStatement().executeUpdate(createStayTable);
             this.connection.createStatement().executeUpdate(CreateConsommationTable);

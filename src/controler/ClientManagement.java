@@ -14,7 +14,6 @@ public class ClientManagement {
     static List<Client> clients = new ArrayList<>();
     private Database database = new Database();
 
-
     public Client[] getAll() {
         clients.clear();
         List<Map<String, Object>> rows = database.executeReadQuery("SELECT * FROM Client");

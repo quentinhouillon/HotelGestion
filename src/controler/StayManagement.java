@@ -54,7 +54,7 @@ public class StayManagement {
         if (existingRows.isEmpty()) {
             database.executeUpdateQuery(
                     "INSERT INTO Stay (reservation_id, payment) VALUES (?, ?)",
-                    new Object[] { reservation.getID(), null });
+                    new Object[] { reservation.getID(), "Carte Bleue" });
         }
 
         List<Map<String, Object>> rows = database

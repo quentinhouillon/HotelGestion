@@ -1,6 +1,7 @@
 package src.view;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 
 import src.controler.*;
 
@@ -37,8 +38,20 @@ public class StayDialog extends JDialog {
         mainPanel.add(consomation);
 
         JPanel footerPanel = new JPanel();
-        footerPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        footerPanel.setLayout(new BorderLayout());
         footerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        JComboBox paymentBox = new JComboBox<>(stay.getAllPayments());
+        paymentBox.setSelectedItem(stay.getPayment());
+        paymentBox.addActionListener(_ -> {
+            String selected = paymentBox.getSelectedItem().toString();
+            if (selected != null) 
+                stay.setPayment(selected);
+        });
+        paymentBox.setPreferredSize(new Dimension(150, 30));
+
+        JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+        rightPanel.setBackground(null);
 
         JButton addButton = new JButton("Commander");
         UIConstants.createStyledButton(addButton, UIConstants.BLUE_BUTTON_COLOR, Color.WHITE);
@@ -56,8 +69,11 @@ public class StayDialog extends JDialog {
             this.generatePDF();
         });
 
-        footerPanel.add(addButton);
-        footerPanel.add(pdfButton);
+        rightPanel.add(addButton);
+        rightPanel.add(pdfButton);
+
+        footerPanel.add(paymentBox, BorderLayout.WEST);
+        footerPanel.add(rightPanel, BorderLayout.EAST);
         add(mainPanel, BorderLayout.WEST);
         add(footerPanel, BorderLayout.SOUTH);
 
